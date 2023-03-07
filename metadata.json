@@ -1,0 +1,9 @@
+{
+    "name":"HoeUtilitiesV3",
+    "author": "Dawjaw",
+    "entry": "index.js",
+    "requires": ["Vigilance", "axios", "Elementa"],
+    "description": "Beta version of HoeUtilitiesV2",
+    "version": "3.2.2",
+    "changelog": "§c[HU3]§r §2Tried fixing auto hide, lets see how it goes.§r"
+}
