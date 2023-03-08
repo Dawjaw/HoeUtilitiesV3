@@ -2,7 +2,7 @@
 /// <reference lib="es2015" />
 
 import Settings from "../config"
-import gui, { TOOL_DISPLAY_INFORMATION, TOOL_DISPLAY_INFORMATION_HAS_BAR, TOOL_DISPLAY_INFORMATION_TEXT, PLAYER_INFORMATION, TOOL_INFORMATION } from "../utils/constants"
+import gui, { TOOL_DISPLAY_INFORMATION, TOOL_DISPLAY_INFORMATION_HAS_BAR, TOOL_DISPLAY_INFORMATION_TEXT } from "../utils/constants"
 import {
     AdditiveConstraint,
     animate,
@@ -10,14 +10,9 @@ import {
     ConstantColorConstraint,
     SiblingConstraint,
     UIRoundedRectangle,
-    UIImage,
-    Window,
     UIWrappedText,
-    ChildBasedSizeConstraint,
-    ChildBasedMaxSizeConstraint,
     ChildBasedRangeConstraint,
     CenterConstraint,
-    RainbowColorConstraint,
 } from "../../Elementa";
 import { getRandomArbitrary } from "../utils/utils";
 
@@ -102,7 +97,7 @@ export function createToolHUD() {
             bar2.startTimer(50, 0, function updateLength() {
                 let l = Number.parseInt(TOOL_DISPLAY_INFORMATION[item].split(" ")[0] / 20 * 100);
                 if (l > 0) {
-                    if(l > 100) l = 100;
+                    if (l > 100) l = 100;
                     bar2.setWidth((l).pixels());
                 } else {
                     bar2.setWidth((0).pixels());
@@ -123,17 +118,17 @@ export function createToolHUD() {
         let barToggle = Settings.toolBarEnabled;
         let lastTime2 = undefined;
         textElement2.startTimer(50, 0, function updateText() {
-            if(!lastTime2) lastTime2 = Date.now();
-            if(lastTime2 + 2000 < Date.now()) { lastTime2+=50; return; }
+            if (!lastTime2) lastTime2 = Date.now();
+            if (lastTime2 + 2000 < Date.now()) { lastTime2 += 50; return; }
             textElement2.setText(`${TOOL_DISPLAY_INFORMATION[item]}`);
-            if(Settings.toolrightAlign) {
+            if (Settings.toolrightAlign) {
                 textElement2.setX((3).pixels(true));
             } else {
                 textElement2.setX(new CenterConstraint());
             }
 
-            if(barToggle != Settings.toolBarEnabled && TOOL_DISPLAY_INFORMATION_HAS_BAR[item]) {
-                if(barToggle) {
+            if (barToggle != Settings.toolBarEnabled && TOOL_DISPLAY_INFORMATION_HAS_BAR[item]) {
+                if (barToggle) {
                     elementContainer.removeChild(centerElement);
                     textElement2.setChildOf(centerElement);
                     textElement2.setX(new CenterConstraint());
@@ -147,7 +142,7 @@ export function createToolHUD() {
             }
 
             if (!Settings.colorToolRainbow) {
-                if(!textElement2.getShadow()) textElement2.setShadow(true);
+                if (!textElement2.getShadow()) textElement2.setShadow(true);
                 textElement2.setColor(new ConstantColorConstraint(Settings.colorToolValueText));
             } else {
                 currentStep2++
@@ -162,10 +157,10 @@ export function createToolHUD() {
 
         let lastTime = undefined;
         textElement.startTimer(50, 0, function updateText() {
-            if(!lastTime) lastTime = Date.now();
-            if(lastTime + 2000 < Date.now()) { lastTime+=50; return; }
+            if (!lastTime) lastTime = Date.now();
+            if (lastTime + 2000 < Date.now()) { lastTime += 50; return; }
             if (!Settings.colorToolRainbow) {
-                if(!textElement.getShadow()) textElement.setShadow(true);
+                if (!textElement.getShadow()) textElement.setShadow(true);
                 textElement.setColor(new ConstantColorConstraint(Settings.colorToolFeatureText));
             } else {
                 currentStep++

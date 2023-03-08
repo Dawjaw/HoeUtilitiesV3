@@ -4,8 +4,6 @@
 import { BLOCK_BREAK_OBJECT, TOOL_DISPLAY_INFORMATION } from "../utils/constants";
 import Settings from "../config";
 
-const System = Java.type('java.lang.System');
-
 export function calculateBlockBreaksPerSecond() {
     const KeyBindName = new KeyBind("Reset Blocks/s", Keyboard.KEY_NONE, "HoeUtilitiesV3")
 
@@ -28,5 +26,5 @@ export function calculateBlockBreaksPerSecond() {
         }
     }).setFps(20);
 
-    
+
 }

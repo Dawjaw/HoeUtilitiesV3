@@ -2,7 +2,7 @@
 /// <reference lib="es2015" />
 
 //import {  } from "../utils/constants";
-import Settings from "../config";
+//import Settings from "../config";
 
 export function setupSession() {
     let sessionInformation = {
@@ -45,21 +45,21 @@ export function setupSession() {
             cane: 0,
             mushroom: 0,
         },
-        
+
     }
 
     register('command', () => {
-        
+
     }).setName('startfarmingsession');
 
     register('command', () => {
-        
+
     }).setName('stopfarmingsession');
 
     register('step', () => {
         if (sessionInformation.sessionActive) {
-            
+
         }
 
-    }).setDelay(1);  
+    }).setDelay(1);
 }

@@ -17,7 +17,6 @@ import { createXpHud } from "./elementaHUD/xpHud"
 import { updateXpPerHour } from "./features/timeUntilNextLevel"
 import { hideOnFlag } from "./features/hideOnFlag"
 import { startBerryAlert } from "./features/starwberryAlert"
-import { orderGUI } from "./utils/constants"
 import { createOrderHUD } from "./elementaHUD/orderChangeHud"
 
 preload();
@@ -50,31 +49,6 @@ this.orderGUI.registerMouseDragged((x, y, b) => this.mainHUD.mouseDrag(x, y, b))
 this.orderGUI.registerScrolled((x, y, s) => this.mainHUD.mouseScroll(s));
 this.orderGUI.registerMouseReleased((x, y, b) => this.mainHUD.mouseRelease());
 
-// change the color of the screen to indicate that the user is in the GUI
-function guiMover() {
-    if (gui.isOpen()) {
-        Renderer.drawRect(
-            Renderer.color(0, 0, 0, 70),
-            0,
-            0,
-            Renderer.screen.getWidth(),
-            Renderer.screen.getHeight()
-        );
-    }
-}
-
-function orderGUIMover() {
-    if (orderGUI.isOpen()) {
-        Renderer.drawRect(
-            Renderer.color(0, 0, 0, 70),
-            0,
-            0,
-            Renderer.screen.getWidth(),
-            Renderer.screen.getHeight()
-        );
-    }
-}
-
 let inspectorHUD = getInspector();
 let debugHUD = createDebugHud();
 let inspectorHidden = false;
@@ -100,8 +74,17 @@ mainHUD.removeChild(orderhud);
 
 register('renderOverlay', () => {
     if (!World.isLoaded() || reload) return;
-    guiMover();
-    orderGUIMover();
+    ////////////////////////////////////////////////////
+    // change the color of the screen to indicate that the user is in the GUI
+    if (orderGUI.isOpen() || gui.isOpen()) {
+        Renderer.drawRect(
+            Renderer.color(0, 0, 0, 70),
+            0,
+            0,
+            Renderer.screen.getWidth(),
+            Renderer.screen.getHeight()
+        );
+    }
     ////////////////////////////////////////////////////
     if (Settings.toolHudEnabled) {
         if (toolHUDHidden) {
@@ -199,30 +182,7 @@ register('serverDisconnect', () => {
 
 register('serverConnect', () => {
     if (!reload) return;
-    mainHUD.clearChildren();
-    toolHUD = null;
-    inspectorHUD = null;
-    debugHUD = null;
-    jacobHUD = null;
-    inspectorHUD = getInspector();
-    debugHUD = createDebugHud();
-    inspectorHidden = false;
-
-    toolHUD = createToolHUD();
-    toolHUDHidden = false;
-
-    xpHUD = createXpHud();
-    xpHUDHidden = false;
-
-    jacobHUD = createJacobHud();
-    jacobHidden = false;
-
-    mainHUD.addChildren(inspectorHUD);
-    debugHUD.forEach(child => mainHUD.addChildren(child));
-    mainHUD.addChildren(toolHUD);
-    mainHUD.addChildren(xpHUD);
-    mainHUD.addChildren(jacobHUD);
-    reload = false;
+    fullReload();
 });
 
 function fullReload() {
