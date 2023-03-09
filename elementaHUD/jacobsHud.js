@@ -15,8 +15,6 @@ import {
     UIWrappedText,
     ChildBasedSizeConstraint,
     ChildBasedRangeConstraint,
-    ElementaFonts,
-    UIText
 } from "../../Elementa";
 
 const Color = Java.type("java.awt.Color");
@@ -28,7 +26,7 @@ function generateImagesAndText() {
 
     let images = [];
 
-    let values = [0,1,2];
+    let values = [0, 1, 2];
 
     values.forEach((value, idx) => {
         const image = UIImage.Companion.ofFile(new File(`config/ChatTriggers/images/${CROP_TO_IMAGE[JACOB_EVENTS.cropsInNextEvent[idx]]}.png`))
@@ -44,10 +42,10 @@ function generateImagesAndText() {
         .setX(new AdditiveConstraint(new SiblingConstraint(), (5).pixels()))
         .setY((6).pixels())
 
-    textElement.startTimer(50, 0, function updateText() {
+    textElement.startTimer(50, 0, () => {
         textElement.setText(`${JACOB_EVENTS.timeUntilJacobEvent}`);
         if (!Settings.colorJacobRainbow) {
-            if(!textElement.getShadow()) textElement.setShadow(true);
+            if (!textElement.getShadow()) textElement.setShadow(true);
             textElement.setColor(new ConstantColorConstraint(Settings.colorJacobValueText));
         } else {
             currentStep++
@@ -90,14 +88,14 @@ export function createJacobHud() {
 
     mainUIContainer
         .onMouseClick((comp, event) => {
-            if(Settings.windowIsSelected) return;
+            if (Settings.windowIsSelected) return;
             Settings.windowIsSelected = true;
             guiIsSelected = true;
             dragOffset.x = event.absoluteX;
             dragOffset.y = event.absoluteY;
         })
         .onMouseRelease(() => {
-            if(Settings.windowIsSelected && guiIsSelected) {
+            if (Settings.windowIsSelected && guiIsSelected) {
                 guiIsSelected = false;
                 Settings.windowIsSelected = false;
             }

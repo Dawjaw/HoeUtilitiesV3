@@ -2,7 +2,6 @@ import axios from "../../axios"
 import Settings from "../config"
 
 import { PET_LEVELS, PET_INFORMATION, COLLECTIONS, PLAYER_INFORMATION, JACOB_EVENTS, BAZAAR_FARMING_NAMES, BAZAAR_NAME_TO_CROP_NAME, BAZAAR_INFORMATION, TOOL_INFORMATION } from "../utils/constants"
-const JString = Java.type("java.lang.String")
 const Base64 = Java.type("java.util.Base64")
 
 let oldUpdateData = {
@@ -13,8 +12,7 @@ export function updateAPIStats() {
     function updateStats() {
         //print("Updating API Stats")
         if (Settings.apiKey === "") return;
-        let uuid = Player.getUUID();
-        let shortUUID = uuid.split("-").join("");
+        let shortUUID = Player.getUUID().split("-").join("");
 
         // soon™ 'https://dawjaw.net/getPlayerInformation?uuid=' + uuid
         //sendRequest('https://api.hypixel.net/skyblock/profiles?key=' + Settings.apiKey + '&uuid=' + uuid)

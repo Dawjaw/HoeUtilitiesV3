@@ -14,7 +14,7 @@ function convertSecondsToMinutesAndSeconds(milliseconds) {
 
 function isIterable(value) {
     return Symbol.iterator in Object(value);
-  }
+}
 
 export function jacobsGuiFeature() {
     register('step', () => {

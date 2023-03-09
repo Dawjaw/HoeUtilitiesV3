@@ -3,7 +3,7 @@
 
 import {
     TOOL_INFORMATION, TIER_BONUS, RARITIES, PET_INFORMATION, PLAYER_INFORMATION, EXP_REQUIRED_PER_LEVEL, BLOCKS_TO_COLLECTION_TYPE, ARMOR_PIECE_BONUS,
-    MAX_AGE_OF_BLOCKS, TOOL_TO_TURBO_ENCHANT, BLOCK_BREAK_OBJECT, TOOL_DISPLAY_INFORMATION, COLLECTIONS, DROPS_PER_BREAK, XP_DISPLAY_INFORMATION, BOUNTIFUL, ARMOR_BONUS, BASIC_ITEM_RATES, ROMAN_TO_ARABIC, CROP_TO_IMAGE, currentlyHeldTool
+    MAX_AGE_OF_BLOCKS, TOOL_TO_TURBO_ENCHANT, BLOCK_BREAK_OBJECT, TOOL_DISPLAY_INFORMATION, COLLECTIONS, DROPS_PER_BREAK, BOUNTIFUL, ARMOR_BONUS, BASIC_ITEM_RATES, ROMAN_TO_ARABIC, CROP_TO_IMAGE, currentlyHeldTool
 } from "./constants";
 import Settings from "../config";
 import { numberWithCommas, getSkyblockID, getDaedalusAxeBonus, getItemRarity } from "./utils";
@@ -52,10 +52,10 @@ export function updateToolInformation() {
                 }
             }
         })
-        
+
         // add the bonus for each armor piece
         Object.keys(armorPieceCount).forEach(piece => {
-            TOOL_INFORMATION.armorBonus += ARMOR_PIECE_BONUS[piece][armorPieceCount[piece] -1]
+            TOOL_INFORMATION.armorBonus += ARMOR_PIECE_BONUS[piece][armorPieceCount[piece] - 1]
         })
 
         //////////////////////////////////////////////////////////////////////////////////
@@ -290,7 +290,7 @@ export function updatePlayerInformation() {
         }
 
         if (Player.getContainer()?.getName() === "Community Shop") {
-            if (Player.getContainer()?.getStackInSlot(44)?.getName().includes("Garden Farming Fortune")) {
+            if (Player.getContainer()?.getStackInSlot(44)?.getName()?.includes("Garden Farming Fortune")) {
                 Settings.gardenCommunityUpgrade = Number(ROMAN_TO_ARABIC[ChatLib.removeFormatting(Player.getContainer()?.getStackInSlot(44)?.getName()).split(" ").pop()]);
                 Settings.save();
             }

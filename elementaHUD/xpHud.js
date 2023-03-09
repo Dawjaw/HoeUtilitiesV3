@@ -10,14 +10,10 @@ import {
     ConstantColorConstraint,
     SiblingConstraint,
     UIRoundedRectangle,
-    UIImage,
-    Window,
     UIWrappedText,
     ChildBasedSizeConstraint,
-    ChildBasedMaxSizeConstraint,
     ChildBasedRangeConstraint,
     CenterConstraint,
-    RainbowColorConstraint,
 } from "../../Elementa";
 import { getRandomArbitrary } from "../utils/utils";
 
@@ -90,16 +86,16 @@ export function createXpHud() {
 
         let lastTime2 = undefined;
         textElement2.startTimer(50, 0, function updateText() {
-            if(!lastTime2) lastTime2 = Date.now();
-            if(lastTime2 + 2000 < Date.now())  { lastTime2+=50; return; };
+            if (!lastTime2) lastTime2 = Date.now();
+            if (lastTime2 + 2000 < Date.now()) { lastTime2 += 50; return; };
             textElement2.setText(`${XP_DISPLAY_INFORMATION[item]}`);
-            if(Settings.xprightAlign) {
+            if (Settings.xprightAlign) {
                 textElement2.setX((3).pixels(true));
             } else {
                 textElement2.setX(new CenterConstraint());
             }
             if (!Settings.colorXPRainbow) {
-                if(!textElement2.getShadow()) textElement2.setShadow(true);
+                if (!textElement2.getShadow()) textElement2.setShadow(true);
                 textElement2.setColor(new ConstantColorConstraint(Settings.colorXPValueText));
             } else {
                 currentStep2++
@@ -114,10 +110,10 @@ export function createXpHud() {
 
         let lastTime = undefined;
         textElement.startTimer(50, 0, function updateText() {
-            if(!lastTime) lastTime = Date.now();
-            if(lastTime + 2000 < Date.now())  { lastTime+=50; return; }
+            if (!lastTime) lastTime = Date.now();
+            if (lastTime + 2000 < Date.now()) { lastTime += 50; return; }
             if (!Settings.colorXPRainbow) {
-                if(!textElement.getShadow()) textElement.setShadow(true);
+                if (!textElement.getShadow()) textElement.setShadow(true);
                 textElement.setColor(new ConstantColorConstraint(Settings.colorXPFeatureText));
             } else {
                 currentStep++
@@ -192,7 +188,7 @@ export function createXpHud() {
         })
     // hiddenList.push([elementContainer, item, false]);
     mainUIContainer.startTimer(100, 0, function hideAndUnhide() {
-        if(!gui.isOpen()) mainUIContainer.setColor(new ConstantColorConstraint(Settings.colorXPBackground));
+        if (!gui.isOpen()) mainUIContainer.setColor(new ConstantColorConstraint(Settings.colorXPBackground));
         hiddenList.forEach((list, idx) => {
             if (Settings[list[1]] === false) {
                 if (!list[2]) {

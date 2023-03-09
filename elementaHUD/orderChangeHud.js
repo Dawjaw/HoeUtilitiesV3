@@ -2,24 +2,16 @@
 /// <reference lib="es2015" />
 
 import Settings from "../config"
-import gui, { TOOL_DISPLAY_INFORMATION, XP_DISPLAY_INFORMATION_TEXT, TOOL_DISPLAY_INFORMATION_HAS_BAR, TOOL_DISPLAY_INFORMATION_TEXT, PLAYER_INFORMATION, TOOL_INFORMATION, orderGUI, mainHUD, XP_DISPLAY_INFORMATION } from "../utils/constants"
+import { TOOL_DISPLAY_INFORMATION, XP_DISPLAY_INFORMATION_TEXT, TOOL_DISPLAY_INFORMATION_TEXT, XP_DISPLAY_INFORMATION } from "../utils/constants"
 import {
     AdditiveConstraint,
-    animate,
-    Animations,
     ConstantColorConstraint,
     SiblingConstraint,
     UIRoundedRectangle,
-    UIImage,
-    Window,
     UIWrappedText,
     ChildBasedSizeConstraint,
-    ChildBasedMaxSizeConstraint,
-    ChildBasedRangeConstraint,
     CenterConstraint,
-    RainbowColorConstraint,
 } from "../../Elementa";
-import { getRandomArbitrary, resetOrderGUI } from "../utils/utils";
 
 const Color = Java.type("java.awt.Color");
 function getJavaColor(color) {
@@ -27,10 +19,10 @@ function getJavaColor(color) {
 }
 
 export function createOrderHUD(info_components) {
-    const dragOffset = { x: 0, y: 0 };
-    let guiIsSelected;
-    let upSetup = false;
-    let downSetup = false;
+    //const dragOffset = { x: 0, y: 0 };
+    //let guiIsSelected;
+    //let upSetup = false;
+    //let downSetup = false;
     let elementSelected = false;
     let selectedElement;
 
@@ -78,7 +70,7 @@ export function createOrderHUD(info_components) {
     }
 
     const upButton = new UIRoundedRectangle(3)
-        .setX((mainUIContainer.getWidth()-10).pixels())
+        .setX((mainUIContainer.getWidth() - 10).pixels())
         .setWidth((10).pixels())
         .setHeight((10).pixels())
         .setColor(new ConstantColorConstraint(new Color(255 / 255, 107 / 255, 100 / 255, 0.5)))
@@ -90,10 +82,10 @@ export function createOrderHUD(info_components) {
             moveUp(selectedElement);
         }
     })
-    
+
     const downButton = new UIRoundedRectangle(3)
-        .setX((mainUIContainer.getWidth()-10).pixels())
-        .setY((mainUIContainer.getHeight()-10).pixels())
+        .setX((mainUIContainer.getWidth() - 10).pixels())
+        .setY((mainUIContainer.getHeight() - 10).pixels())
         .setWidth((10).pixels())
         .setHeight((10).pixels())
         .setColor(new ConstantColorConstraint(new Color(207 / 255, 207 / 255, 196 / 255, 0.5)))
@@ -107,13 +99,13 @@ export function createOrderHUD(info_components) {
     });
 
     items.forEach((item, idx) => {
-        let value = values[idx];
-        let selected = false;
+        //let value = values[idx];
+        //let selected = false;
 
         const elementContainer = new UIRoundedRectangle(3)
             .setX((3).pixels())
             //.setY(new AdditiveConstraint(new SiblingConstraint(), (3).pixels()))
-            .setY(((idx*11) + 5).pixels())
+            .setY(((idx * 11) + 5).pixels())
             .setHeight((8).pixels())
             .setWidth(new AdditiveConstraint(new ChildBasedSizeConstraint(), (10).pixels()))
             .setChildOf(mainUIContainer)
@@ -173,7 +165,7 @@ export function createOrderHUD(info_components) {
         const index = keys.indexOf(element);
 
         let newIndex = index + 1;
-        if (newIndex > keys.length-2) {
+        if (newIndex > keys.length - 2) {
             newIndex = keys.length;
         }
 
@@ -184,7 +176,7 @@ export function createOrderHUD(info_components) {
     }
 
     function update(keys, element) {
-        if (element in TOOL_DISPLAY_INFORMATION) {    
+        if (element in TOOL_DISPLAY_INFORMATION) {
             let to_change = JSON.parse(Settings.orderTools);
             const newObj = {};
             keys.forEach((key) => {
@@ -210,12 +202,12 @@ function regenerateChildren(mainUIContainer, newIndex, keys, info_components, or
     mainUIContainer.clearChildren();
     keys.forEach((item, idx) => {
         //let value = values[idx];
-        let selected = false;
+        //let selected = false;
 
         const elementContainer = new UIRoundedRectangle(3)
             .setX((3).pixels())
             //.setY(new AdditiveConstraint(new SiblingConstraint(), (3).pixels()))
-            .setY(((idx*11) + 5).pixels())
+            .setY(((idx * 11) + 5).pixels())
             .setHeight((8).pixels())
             .setWidth(new AdditiveConstraint(new ChildBasedSizeConstraint(), (10).pixels()))
             .setChildOf(mainUIContainer)
@@ -251,11 +243,11 @@ function regenerateChildren(mainUIContainer, newIndex, keys, info_components, or
         });
 
         const upButton = new UIRoundedRectangle(3)
-        .setX((mainUIContainer.getWidth()-10).pixels())
-        .setWidth((10).pixels())
-        .setHeight((10).pixels())
-        .setColor(new ConstantColorConstraint(new Color(255 / 255, 107 / 255, 100 / 255, 0.5)))
-        .setChildOf(mainUIContainer);
+            .setX((mainUIContainer.getWidth() - 10).pixels())
+            .setWidth((10).pixels())
+            .setHeight((10).pixels())
+            .setColor(new ConstantColorConstraint(new Color(255 / 255, 107 / 255, 100 / 255, 0.5)))
+            .setChildOf(mainUIContainer);
 
         upButton.onMouseClick((comp, event) => {
             //print("clicked up")
@@ -263,10 +255,10 @@ function regenerateChildren(mainUIContainer, newIndex, keys, info_components, or
                 moveUp(selectedElement);
             }
         })
-        
+
         const downButton = new UIRoundedRectangle(3)
-            .setX((mainUIContainer.getWidth()-10).pixels())
-            .setY((mainUIContainer.getHeight()-10).pixels())
+            .setX((mainUIContainer.getWidth() - 10).pixels())
+            .setY((mainUIContainer.getHeight() - 10).pixels())
             .setWidth((10).pixels())
             .setHeight((10).pixels())
             .setColor(new ConstantColorConstraint(new Color(207 / 255, 207 / 255, 196 / 255, 0.5)))
@@ -314,7 +306,7 @@ function regenerateChildren(mainUIContainer, newIndex, keys, info_components, or
         const index = keys.indexOf(element);
 
         let newIndex = index + 1;
-        if (newIndex > keys.length-2) {
+        if (newIndex > keys.length - 2) {
             newIndex = keys.length;
         }
 
@@ -327,7 +319,7 @@ function regenerateChildren(mainUIContainer, newIndex, keys, info_components, or
     function update(keys, element) {
         //Settings.orderTools=JSON.stringify(TOOL_DISPLAY_INFORMATION)
         //Settings.orderXP=JSON.stringify(XP_DISPLAY_INFORMATION)
-        if (element in TOOL_DISPLAY_INFORMATION) {    
+        if (element in TOOL_DISPLAY_INFORMATION) {
             let to_change = JSON.parse(Settings.orderTools);
             const newObj = {};
             keys.forEach((key) => {

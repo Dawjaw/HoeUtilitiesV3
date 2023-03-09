@@ -10,33 +10,14 @@ export function preload() {
     }
 
     if (Settings.updateRessources) {
-        // download all images which are going to be used by the GUI
-        const image1 = new Image("carrot.png", "https://dawjaw.net/static/carrot.png");
-        const image2 = new Image("melon.png", "https://dawjaw.net/static/melon.png");
-        const image3 = new Image("cocoa.png", "https://dawjaw.net/static/cocoa.png");
-        const image4 = new Image("pumpkin.png", "https://dawjaw.net/static/pumpkin.png");
-        const image5 = new Image("cane.png", "https://dawjaw.net/static/cane.png");
-        const image6 = new Image("cactus.png", "https://dawjaw.net/static/cactus.png");
-        const image7 = new Image("potato.png", "https://dawjaw.net/static/potato.png");
-        const image8 = new Image("mushroom.png", "https://dawjaw.net/static/mushroom.png");
-        const image9 = new Image("wheat.png", "https://dawjaw.net/static/wheat.png");
-        const image10 = new Image("wart.png", "https://dawjaw.net/static/wart.png");
+        loadImages();
         Settings.updateRessources = false;
         Settings.save();
     }
 
     // Welcome Message
     if (Settings.firstRun) {
-        const image1 = new Image("carrot.png", "https://dawjaw.net/static/carrot.png");
-        const image2 = new Image("melon.png", "https://dawjaw.net/static/melon.png");
-        const image3 = new Image("cocoa.png", "https://dawjaw.net/static/cocoa.png");
-        const image4 = new Image("pumpkin.png", "https://dawjaw.net/static/pumpkin.png");
-        const image5 = new Image("cane.png", "https://dawjaw.net/static/cane.png");
-        const image6 = new Image("cactus.png", "https://dawjaw.net/static/cactus.png");
-        const image7 = new Image("potato.png", "https://dawjaw.net/static/potato.png");
-        const image8 = new Image("mushroom.png", "https://dawjaw.net/static/mushroom.png");
-        const image9 = new Image("wheat.png", "https://dawjaw.net/static/wheat.png");
-        const image10 = new Image("wart.png", "https://dawjaw.net/static/wart.png");
+        loadImages();
 
         ChatLib.chat("§eThank you for downloading HoeUtilitiesV3!§r");
         ChatLib.chat("§aType §6/hu3 §ato open the Settings menu.§r");
@@ -65,7 +46,7 @@ export function preload() {
     }*/
 
     // api key check
-    const apiKeyCheck = register('step', () => {    
+    const apiKeyCheck = register('step', () => {
         if (Settings.apiKey === "") {
             ChatLib.chat("§eYou need to set your api key in the settings menu!§r");
 
@@ -80,7 +61,7 @@ export function preload() {
     let currentDebugSetting = Settings.debugMode;
     register('tick', () => {
         if (Settings.debugMode !== currentDebugSetting) {
-            if(Settings.debugMode) {
+            if (Settings.debugMode) {
                 ChatLib.chat("§e[HoeUtilitesV3] Debug mode was enabled!§r");
                 currentDebugSetting = Settings.debugMode;
             } else {
@@ -144,4 +125,18 @@ export function preload() {
         ChatLib.chat(`armor: ${TOOL_INFORMATION.armorBonus}`);
         ChatLib.chat(`equipment: ${TOOL_INFORMATION.equipmentBonus}`);
     }).setName("hu3debug");
+}
+
+// download all images which are going to be used by the GUI, and clear the from the GPU buffer
+function loadImages() {
+    new Image("carrot.png", "https://dawjaw.net/static/carrot.png").destroy();
+    new Image("melon.png", "https://dawjaw.net/static/melon.png").destroy();
+    new Image("cocoa.png", "https://dawjaw.net/static/cocoa.png").destroy();
+    new Image("pumpkin.png", "https://dawjaw.net/static/pumpkin.png").destroy();
+    new Image("cane.png", "https://dawjaw.net/static/cane.png").destroy();
+    new Image("cactus.png", "https://dawjaw.net/static/cactus.png").destroy();
+    new Image("potato.png", "https://dawjaw.net/static/potato.png").destroy();
+    new Image("mushroom.png", "https://dawjaw.net/static/mushroom.png").destroy();
+    new Image("wheat.png", "https://dawjaw.net/static/wheat.png").destroy();
+    new Image("wart.png", "https://dawjaw.net/static/wart.png").destroy();
 }
