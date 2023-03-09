@@ -11,6 +11,7 @@ import {
     SiblingConstraint,
     UIRoundedRectangle,
     UIWrappedText,
+    ChildBasedSizeConstraint,
     ChildBasedRangeConstraint,
     CenterConstraint,
 } from "../../Elementa";
