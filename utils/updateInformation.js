@@ -290,7 +290,7 @@ export function updatePlayerInformation() {
         }
 
         if (Player.getContainer()?.getName() === "Community Shop") {
-            if (Player.getContainer()?.getStackInSlot(44)?.getName().includes("Garden Farming Fortune")) {
+            if (Player.getContainer()?.getStackInSlot(44)?.getName()?.includes("Garden Farming Fortune")) {
                 Settings.gardenCommunityUpgrade = Number(ROMAN_TO_ARABIC[ChatLib.removeFormatting(Player.getContainer()?.getStackInSlot(44)?.getName()).split(" ").pop()]);
                 Settings.save();
             }
