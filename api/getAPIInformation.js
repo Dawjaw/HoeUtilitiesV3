@@ -1,7 +1,8 @@
 import axios from "../../axios"
 import Settings from "../config"
+import { JacobFeature } from "../features/jacob"
 
-import { PET_LEVELS, PET_INFORMATION, COLLECTIONS, PLAYER_INFORMATION, JACOB_EVENTS, BAZAAR_FARMING_NAMES, BAZAAR_NAME_TO_CROP_NAME, BAZAAR_INFORMATION, TOOL_INFORMATION } from "../utils/constants"
+import { PET_LEVELS, PET_INFORMATION, COLLECTIONS, PLAYER_INFORMATION, BAZAAR_FARMING_NAMES, BAZAAR_NAME_TO_CROP_NAME, BAZAAR_INFORMATION, TOOL_INFORMATION } from "../utils/constants"
 const Base64 = Java.type("java.util.Base64")
 
 let oldUpdateData = {
@@ -185,7 +186,7 @@ export function updateAPIStats() {
                 "User-Agent": "Mozilla/5.0 (ChatTriggers)"
             },
         }).then(response => {
-            JACOB_EVENTS.jacobEventList = response.data
+            JacobFeature.eventList = response.data
         }).catch(error => {
             print(error)
             if (error.isAxiosError) {

@@ -1,7 +1,7 @@
 /// <reference types="../CTAutocomplete"/>
 /// <reference lib="es2015"/>
 
-import { @Vigilant, @TextProperty, @SwitchProperty, @ButtonProperty, 
+import { @Vigilant, @TextProperty, @SwitchProperty, @ButtonProperty,
     @NumberProperty, @SelectorProperty, @SliderProperty, @ColorProperty, Color, @ParagraphProperty } from 'Vigilance';
 import gui, { orderGUI, mainHUD, TOOL_DISPLAY_INFORMATION } from './utils/constants';
 import { PixelConstraint } from '../Elementa';
@@ -9,7 +9,7 @@ import { PixelConstraint } from '../Elementa';
 
 const Color = Java.type("java.awt.Color");
 
-@Vigilant("HoeUtilitiesV3", "HoeUtilitiesV3", {    
+@Vigilant("HoeUtilitiesV3", "HoeUtilitiesV3", {
     getCategoryComparator: () => (a, b) => {
         const categories = ["General", "Tools", "XP", "Order", "Session", "Jacobs"];
 
@@ -174,7 +174,7 @@ class Settings {
         subcategory: "Gui",
         hidden: true
     })
-    tffc=true
+    tffc = true
 
     @SwitchProperty({
         name: "Tool HUD Enabled",
@@ -253,7 +253,7 @@ class Settings {
         category: "Tools",
         subcategory: "Toggle Features",
     })
-    showToolBlocksS = true;  
+    showToolBlocksS = true;
 
     @SwitchProperty({
         name: "Toggle Yield Efficiency Display",
@@ -261,7 +261,7 @@ class Settings {
         category: "Tools",
         subcategory: "Toggle Features",
     })
-    showToolYieldEfficiency = true;  
+    showToolYieldEfficiency = true;
 
     @SwitchProperty({
         name: "Toggle Max Yield Display",
@@ -269,7 +269,7 @@ class Settings {
         category: "Tools",
         subcategory: "Toggle Features",
     })
-    showToolMaxYield = true;  
+    showToolMaxYield = true;
 
     @SwitchProperty({
         name: "Toggle Expected Profit Display",
@@ -277,7 +277,7 @@ class Settings {
         category: "Tools",
         subcategory: "Toggle Features",
     })
-    showToolExpectedProfit = true;  
+    showToolExpectedProfit = true;
 
     @SwitchProperty({
         name: "Toggle Collection Display",
@@ -285,7 +285,7 @@ class Settings {
         category: "Tools",
         subcategory: "Toggle Features",
     })
-    showToolCollection = true;  
+    showToolCollection = true;
 
     @SwitchProperty({
         name: "Toggle Yaw Display",
@@ -293,7 +293,7 @@ class Settings {
         category: "Tools",
         subcategory: "Toggle Features",
     })
-    showToolYaw = true;  
+    showToolYaw = true;
 
     @SwitchProperty({
         name: "Toggle Pitch Display",
@@ -301,7 +301,7 @@ class Settings {
         category: "Tools",
         subcategory: "Toggle Features",
     })
-    showToolPitch = true;  
+    showToolPitch = true;
 
     //////////////////////////////////////// Colors ///////////////////////////////////////
 
@@ -335,7 +335,7 @@ class Settings {
         category: "Tools",
         subcategory: "Customization",
     })
-    colorToolBackground = new Color(0,0,0,50/255);
+    colorToolBackground = new Color(0, 0, 0, 50 / 255);
 
     @ColorProperty({
         name: "Tool HUD Feature Text",
@@ -343,7 +343,7 @@ class Settings {
         category: "Tools",
         subcategory: "Customization",
     })
-    colorToolFeatureText = new Color(255/255,255/255,255/255);
+    colorToolFeatureText = new Color(255 / 255, 255 / 255, 255 / 255);
 
     @ColorProperty({
         name: "Tool HUD Value Text",
@@ -351,7 +351,7 @@ class Settings {
         category: "Tools",
         subcategory: "Customization",
     })
-    colorToolValueText = new Color(255/255,255/255,255/255);
+    colorToolValueText = new Color(255 / 255, 255 / 255, 255 / 255);
 
     ///////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////
@@ -365,7 +365,7 @@ class Settings {
         subcategory: "Gui",
         hidden: true
     })
-    xffc=true
+    xffc = true
 
     @SwitchProperty({
         name: "XP HUD Enabled",
@@ -459,7 +459,7 @@ class Settings {
         category: "XP",
         subcategory: "Customization",
     })
-    colorXPBackground = new Color(0,0,0,50/255);
+    colorXPBackground = new Color(0, 0, 0, 50 / 255);
 
     @ColorProperty({
         name: "XP HUD Feature Text",
@@ -467,7 +467,7 @@ class Settings {
         category: "XP",
         subcategory: "Customization",
     })
-    colorXPFeatureText = new Color(255/255,255/255,255/255);
+    colorXPFeatureText = new Color(255 / 255, 255 / 255, 255 / 255);
 
     @ColorProperty({
         name: "XP HUD Value Text",
@@ -475,7 +475,7 @@ class Settings {
         category: "XP",
         subcategory: "Customization",
     })
-    colorXPValueText = new Color(255/255,255/255,255/255);
+    colorXPValueText = new Color(255 / 255, 255 / 255, 255 / 255);
 
     ///////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////
@@ -489,7 +489,7 @@ class Settings {
         subcategory: "Toggle Features",
         hidden: true
     })
-    jffc=true
+    jffc = true
 
     @SwitchProperty({
         name: "fix for comparator 3",
@@ -497,7 +497,7 @@ class Settings {
         subcategory: "Gui",
         hidden: true
     })
-    jffc2=true
+    jffc2 = true
 
     @SwitchProperty({
         name: "Jacob HUD Enabled",
@@ -541,15 +541,15 @@ class Settings {
         category: "Jacobs",
         subcategory: "Customization",
     })
-    colorJacobBackground = new Color(0,0,0,50/255);
-    
+    colorJacobBackground = new Color(0, 0, 0, 50 / 255);
+
     @ColorProperty({
         name: "Jacob HUD Text Color",
         description: "Set the text color of the listed Value",
         category: "Jacobs",
         subcategory: "Customization",
     })
-    colorJacobValueText = new Color(255/255,255/255,255/255);
+    colorJacobValueText = new Color(255 / 255, 255 / 255, 255 / 255);
 
     ///////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////
@@ -654,7 +654,7 @@ class Settings {
     locationOrderHUDY = 250;
 
     /////////////////////////////////// Order Features ////////////////////////////////////
-    
+
     @ButtonProperty({
         name: "Change Order Of Tool HUD",
         description: "Change the order of the Tool HUD elements",
@@ -686,7 +686,7 @@ class Settings {
         category: "Order",
         subcategory: "Customization",
     })
-    colorOrderBackground = new Color(0,0,0,50/255);
+    colorOrderBackground = new Color(0, 0, 0, 50 / 255);
 
     @ColorProperty({
         name: "Order HUD Text Color",
@@ -694,7 +694,7 @@ class Settings {
         category: "Order",
         subcategory: "Customization",
     })
-    colorOrderValueText = new Color(200/255,200/255,200/255);
+    colorOrderValueText = new Color(200 / 255, 200 / 255, 200 / 255);
 
 
     constructor() {

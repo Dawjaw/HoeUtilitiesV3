@@ -127,16 +127,15 @@ export function preload() {
     }).setName("hu3debug");
 }
 
-// download all images which are going to be used by the GUI, and clear the from the GPU buffer
 function loadImages() {
-    new Image("carrot.png", "https://dawjaw.net/static/carrot.png").destroy();
-    new Image("melon.png", "https://dawjaw.net/static/melon.png").destroy();
-    new Image("cocoa.png", "https://dawjaw.net/static/cocoa.png").destroy();
-    new Image("pumpkin.png", "https://dawjaw.net/static/pumpkin.png").destroy();
-    new Image("cane.png", "https://dawjaw.net/static/cane.png").destroy();
-    new Image("cactus.png", "https://dawjaw.net/static/cactus.png").destroy();
-    new Image("potato.png", "https://dawjaw.net/static/potato.png").destroy();
-    new Image("mushroom.png", "https://dawjaw.net/static/mushroom.png").destroy();
-    new Image("wheat.png", "https://dawjaw.net/static/wheat.png").destroy();
-    new Image("wart.png", "https://dawjaw.net/static/wart.png").destroy();
+    Image.fromUrl("https://dawjaw.net/static/carrot.png", "carrot.png");
+    Image.fromUrl("https://dawjaw.net/static/melon.png", "melon.png");
+    Image.fromUrl("https://dawjaw.net/static/cocoa.png", "cocoa.png");
+    Image.fromUrl("https://dawjaw.net/static/pumpkin.png", "pumpkin.png");
+    Image.fromUrl("https://dawjaw.net/static/cane.png", "cane.png");
+    Image.fromUrl("https://dawjaw.net/static/cactus.png", "cactus.png");
+    Image.fromUrl("https://dawjaw.net/static/potato.png", "potato.png");
+    Image.fromUrl("https://dawjaw.net/static/mushroom.png", "mushroom.png");
+    Image.fromUrl("https://dawjaw.net/static/wheat.png", "wheat.png");
+    Image.fromUrl("https://dawjaw.net/static/wart.png", "wart.png");
 }
