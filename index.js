@@ -3,11 +3,11 @@
 
 import Settings from "./config"
 import gui, { mainHUD, getInspector, orderGUI, TOOL_DISPLAY_INFORMATION, XP_DISPLAY_INFORMATION } from "./utils/constants"
-import { preload } from "./utils/preload"
+import "./utils/preload";
 import { createToolHUD } from "./elementaHUD/toolHud"
 import { createDebugHud } from "./elementaHUD/debugHud"
 import { updateToolInformation, updatePetInformation, updatePlayerInformation } from "./utils/updateInformation"
-import { updateAPIStats } from "./api/getAPIInformation"
+import "./api";
 import { calculateBlockBreaksPerSecond } from "./features/bocksPerSecond"
 import { updateYawAndPitch } from "./features/yawAndPitch"
 import { updateYieldEfficiency } from "./features/yieldEfficiency"
@@ -18,12 +18,9 @@ import { startBerryAlert } from "./features/starwberryAlert"
 import { createOrderHUD } from "./elementaHUD/orderChangeHud"
 import { JacobFeature } from "./features/jacob"
 
-preload();
-
 // start main event triggers
 updateToolInformation();
 updatePetInformation();
-updateAPIStats();
 updatePlayerInformation();
 
 // features

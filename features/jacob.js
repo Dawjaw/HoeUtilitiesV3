@@ -159,4 +159,20 @@ export class JacobFeature {
     }
 
     static eventList = {};
+    static getEvents() {
+        axios.get("https://dawjaw.net/jacobs", {
+            headers: {
+                "User-Agent": "Mozilla/5.0 (ChatTriggers)"
+            },
+        }).then(response => {
+            JacobFeature.eventList = response.data;
+        }).catch(error => {
+            print(error)
+            if (error.isAxiosError) {
+                print(error.code + ": " + error.response.data);
+            } else {
+                print(error.message);
+            }
+        });
+    }
 }
