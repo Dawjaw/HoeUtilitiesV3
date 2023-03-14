@@ -13,6 +13,7 @@ import {
     UIWrappedText,
     ChildBasedSizeConstraint,
     ChildBasedRangeConstraint,
+    ChildBasedSizeConstraint,
     CenterConstraint,
 } from "../../Elementa";
 import { getRandomArbitrary } from "../utils/utils";
