@@ -1,5 +1,4 @@
 import axios from "../../axios";
-import Settings from "../config";
 import { BAZAAR_FARMING_NAMES, BAZAAR_NAME_TO_CROP_NAME, BAZAAR_INFORMATION } from "../utils/constants"
 
 

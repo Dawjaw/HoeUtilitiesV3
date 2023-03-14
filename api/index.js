@@ -1,5 +1,7 @@
 import Settings from "../config";
 import { JacobFeature } from "../features/jacob";
+import { getPlayerStats } from "./stats";
+import { getBazaarData } from "./bazaar";
 
 register("step", getApiData).setDelay(300);
 register("gameLoad", getApiData);
