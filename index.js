@@ -3,13 +3,11 @@
 
 import Settings from "./config"
 import gui, { mainHUD, getInspector, orderGUI, TOOL_DISPLAY_INFORMATION, XP_DISPLAY_INFORMATION } from "./utils/constants"
-import { preload } from "./utils/preload"
+import "./utils/preload";
 import { createToolHUD } from "./elementaHUD/toolHud"
 import { createDebugHud } from "./elementaHUD/debugHud"
-import { createJacobHud } from "./elementaHUD/jacobsHud"
 import { updateToolInformation, updatePetInformation, updatePlayerInformation } from "./utils/updateInformation"
-import { updateAPIStats } from "./api/getAPIInformation"
-import { jacobsGuiFeature } from "./features/jacobEvents"
+import "./api";
 import { calculateBlockBreaksPerSecond } from "./features/bocksPerSecond"
 import { updateYawAndPitch } from "./features/yawAndPitch"
 import { updateYieldEfficiency } from "./features/yieldEfficiency"
@@ -18,17 +16,15 @@ import { updateXpPerHour } from "./features/timeUntilNextLevel"
 import { hideOnFlag } from "./features/hideOnFlag"
 import { startBerryAlert } from "./features/starwberryAlert"
 import { createOrderHUD } from "./elementaHUD/orderChangeHud"
-
-preload();
+import { JacobFeature } from "./features/jacob"
 
 // start main event triggers
 updateToolInformation();
 updatePetInformation();
-updateAPIStats();
 updatePlayerInformation();
 
 // features
-jacobsGuiFeature();
+new JacobFeature(mainHUD);
 calculateBlockBreaksPerSecond();
 updateYawAndPitch();
 updateYieldEfficiency();
@@ -59,8 +55,8 @@ let toolHUDHidden = false;
 let xpHUD = createXpHud();
 let xpHUDHidden = false;
 
-let jacobHUD = createJacobHud();
-let jacobHidden = false;
+//let jacobHUD = createJacobHud();
+//let jacobHidden = false;
 
 let orderhud = createOrderHUD(XP_DISPLAY_INFORMATION);
 
@@ -68,7 +64,7 @@ mainHUD.addChildren(inspectorHUD);
 debugHUD.forEach(child => mainHUD.addChildren(child));
 mainHUD.addChildren(toolHUD);
 mainHUD.addChildren(xpHUD);
-mainHUD.addChildren(jacobHUD);
+//mainHUD.addChildren(jacobHUD);
 mainHUD.addChild(orderhud);
 mainHUD.removeChild(orderhud);
 
@@ -132,7 +128,7 @@ register('renderOverlay', () => {
         }
     }
     /////////////////////////////////////////////////////
-    if (Settings.jacobHudEnabled) {
+    /*if (Settings.jacobHudEnabled) {
         if (jacobHidden) {
             jacobHidden = false;
             jacobHUD = createJacobHud();
@@ -144,7 +140,7 @@ register('renderOverlay', () => {
             mainHUD.removeChild(jacobHUD);
             jacobHUD = null;
         }
-    }
+    }*/
     /////////////////////////////////////////////////////
     if (orderGUI.isOpen() && !Settings.orderHudEnabled) {
         switch (Settings.order) {
@@ -190,7 +186,7 @@ function fullReload() {
     toolHUD = null;
     inspectorHUD = null;
     debugHUD = null;
-    jacobHUD = null;
+    //jacobHUD = null;
     inspectorHUD = getInspector();
     debugHUD = createDebugHud();
     inspectorHidden = false;
@@ -201,13 +197,13 @@ function fullReload() {
     xpHUD = createXpHud();
     xpHUDHidden = false;
 
-    jacobHUD = createJacobHud();
-    jacobHidden = false;
+    //jacobHUD = createJacobHud();
+    //jacobHidden = false;
 
     mainHUD.addChildren(inspectorHUD);
     debugHUD.forEach(child => mainHUD.addChildren(child));
     mainHUD.addChildren(toolHUD);
     mainHUD.addChildren(xpHUD);
-    mainHUD.addChildren(jacobHUD);
+    //mainHUD.addChildren(jacobHUD);
     reload = false;
 }
