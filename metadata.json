@@ -4,6 +4,6 @@
     "entry": "index.js",
     "requires": ["Vigilance", "axios", "Elementa"],
     "description": "Beta version of HoeUtilitiesV2",
-    "version": "3.2.2",
-    "changelog": "§c[HU3]§r §2Tried fixing auto hide, lets see how it goes.§r"
+    "version": "3.2.3",
+    "changelog": "§c[HU3]§r §2Another approach to auto hiding the gui, fixed full set bonus from erroring the module§r"
 }

@@ -9,6 +9,7 @@ import {
 export default gui = new Gui();
 export let orderGUI = new Gui();
 export const mainHUD = new Window();
+export const jacobHUD = new Window();
 export function getInspector() {
     const inspector = new Inspector(mainHUD)
         .setX((30).pixels())

@@ -154,6 +154,13 @@ class Settings {
     })
     hideWhenNotHoldingTool = false;
 
+    @SwitchProperty({ // prevents the user from selecting more than one window at a time
+        name: "Never Hide Jacobs HUD",
+        category: "General",
+        subcategory: "Settings",
+    })
+    neverHideJacobsHUD = false;
+
     @NumberProperty({
         name: "hascakeBuff",
         category: "General",
