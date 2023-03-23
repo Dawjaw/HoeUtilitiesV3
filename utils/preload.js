@@ -2,7 +2,7 @@
 /// <reference lib="es2015"/>
 
 import Settings from "../config";
-import gui, { PLAYER_INFORMATION, TOOL_INFORMATION, PET_INFORMATION } from "../utils/constants";
+import guiWrapper, { PLAYER_INFORMATION, TOOL_INFORMATION, PET_INFORMATION } from "../utils/constants";
 
 if (Settings.gardenCropUpgradeMap === "") {
     Settings.gardenCropUpgradeMap = "{}";
@@ -26,7 +26,7 @@ if (Settings.firstRun) {
     ChatLib.chat("§aCertain features might not work if you haven't set your api key yet!§r");
     const clickableMessage = new Message(
         "§aIf you have any issues, please report them on the ",
-        new TextComponent("github page.§r").setClick("open_url", "https://github.com/Dawjaw/HoeUtilitiesV2"),
+        new TextComponent("github page.§r").setClick("open_url", "https://github.com/Dawjaw/HoeUtilitiesV3"),
         "."
     );
     ChatLib.chat(clickableMessage);
@@ -82,7 +82,7 @@ register('chat', (key) => {
 register("command", (arg1, arg2) => {
     if (arg1 === undefined && arg2 === undefined) Settings.openGUI();
     if (arg1 === "gui" && arg2 === undefined) {
-        gui.open();
+        guiWrapper.gui.open();
     }
     if (arg1 === "key" && arg2 !== undefined && arg2.length === 36) {
         Settings.apiKey = arg2;
@@ -127,6 +127,17 @@ register('command', () => {
 
 
 function loadImages() {
+    new Image("carrot.png", "https://dawjaw.net/static/carrot.png");
+    new Image("melon.png", "https://dawjaw.net/static/melon.png");
+    new Image("cocoa.png", "https://dawjaw.net/static/cocoa.png");
+    new Image("pumpkin.png", "https://dawjaw.net/static/pumpkin.png");
+    new Image("cane.png", "https://dawjaw.net/static/cane.png");
+    new Image("cactus.png", "https://dawjaw.net/static/cactus.png");
+    new Image("potato.png", "https://dawjaw.net/static/potato.png");
+    new Image("mushroom.png", "https://dawjaw.net/static/mushroom.png");
+    new Image("wheat.png", "https://dawjaw.net/static/wheat.png");
+    new Image("netherwart.png", "https://dawjaw.net/static/wart.png");
+    /*
     Image.fromUrl("https://dawjaw.net/static/carrot.png", "carrot.png");
     Image.fromUrl("https://dawjaw.net/static/melon.png", "melon.png");
     Image.fromUrl("https://dawjaw.net/static/cocoa.png", "cocoa.png");
@@ -137,4 +148,5 @@ function loadImages() {
     Image.fromUrl("https://dawjaw.net/static/mushroom.png", "mushroom.png");
     Image.fromUrl("https://dawjaw.net/static/wheat.png", "wheat.png");
     Image.fromUrl("https://dawjaw.net/static/wart.png", "wart.png");
+    */
 }

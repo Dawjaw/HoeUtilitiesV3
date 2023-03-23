@@ -2,7 +2,7 @@
 /// <reference lib="es2015" />
 
 import Settings from "../config"
-import gui, { XP_DISPLAY_INFORMATION, XP_DISPLAY_INFORMATION_TEXT } from "../utils/constants"
+import guiWrapper, { XP_DISPLAY_INFORMATION, XP_DISPLAY_INFORMATION_TEXT } from "../utils/constants"
 import {
     AdditiveConstraint,
     animate,
@@ -162,7 +162,7 @@ export function createXpHud() {
             Settings.save();
         })
         .onMouseLeave((comp) => {
-            if (!gui.isOpen()) return;
+            if (!guiWrapper.gui.isOpen()) return;
             animate(comp, (animation) => {
                 animation.setColorAnimation(
                     Animations.OUT_EXP,
@@ -174,7 +174,7 @@ export function createXpHud() {
             });
         })
         .onMouseEnter((comp) => {
-            if (!gui.isOpen()) return;
+            if (!guiWrapper.gui.isOpen()) return;
             animate(comp, (animation) => {
                 animation.setColorAnimation(
                     Animations.OUT_EXP,
@@ -188,7 +188,7 @@ export function createXpHud() {
         })
     // hiddenList.push([elementContainer, item, false]);
     mainUIContainer.startTimer(100, 0, function hideAndUnhide() {
-        if (!gui.isOpen()) mainUIContainer.setColor(new ConstantColorConstraint(Settings.colorXPBackground));
+        if (!guiWrapper.gui.isOpen()) mainUIContainer.setColor(new ConstantColorConstraint(Settings.colorXPBackground));
         hiddenList.forEach((list, idx) => {
             if (Settings[list[1]] === false) {
                 if (!list[2]) {

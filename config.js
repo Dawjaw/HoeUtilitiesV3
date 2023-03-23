@@ -3,7 +3,7 @@
 
 import { @Vigilant, @TextProperty, @SwitchProperty, @ButtonProperty,
     @NumberProperty, @SelectorProperty, @SliderProperty, @ColorProperty, Color, @ParagraphProperty } from 'Vigilance';
-import gui, { orderGUI, mainHUD, TOOL_DISPLAY_INFORMATION } from './utils/constants';
+import guiWrapper, { orderGUI, mainHUD, TOOL_DISPLAY_INFORMATION } from './utils/constants';
 import { PixelConstraint } from '../Elementa';
 //import{ createOrderHUD } from './elementaHUD/orderChangeHud';
 
@@ -46,7 +46,7 @@ class Settings {
         placeholder: 'Click!',
     })
     moveToolInfo() {
-        gui.open();
+        guiWrapper.gui.open();
     }
 
     @TextProperty({

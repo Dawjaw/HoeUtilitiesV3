@@ -1,4 +1,4 @@
-import gui from "../utils/constants";
+import guiWrapper from "../utils/constants";
 import Settings from "../config";
 import axios from "../../axios";
 import { CROP_TO_IMAGE } from "../utils/constants";
@@ -52,7 +52,7 @@ export class JacobFeature {
             Settings.save();
         })
         .onMouseEnter((comp) => {
-            if (!gui.isOpen()) return;
+            if (!guiWrapper.gui.isOpen()) return;
             animate(comp, (animation) => {
                 animation.setColorAnimation(
                     Animations.OUT_EXP, 0.3, new ConstantColorConstraint(new Color(17 / 255, 192 / 255, 49 / 255))
@@ -60,7 +60,7 @@ export class JacobFeature {
             });
         })
         .onMouseLeave((comp) => {
-            if (!gui.isOpen()) return;
+            if (!guiWrapper.gui.isOpen()) return;
             animate(comp, (animation) => {
                 animation.setColorAnimation(
                     Animations.OUT_EXP, 0.3, new ConstantColorConstraint(Settings.colorJacobBackground)
@@ -124,7 +124,7 @@ export class JacobFeature {
         JacobFeature.container.startTimer(1000, 0, () => {
             // Only trigger when outside of the editing gui due to hovering effects and
             // updates when the background color changes
-            if (!gui.isOpen()) JacobFeature.container.setColor(new ConstantColorConstraint(Settings.colorJacobBackground))
+            if (!guiWrapper.gui.isOpen()) JacobFeature.container.setColor(new ConstantColorConstraint(Settings.colorJacobBackground))
 
 
             if (this.cachedCrops !== this.crops.toString()) {

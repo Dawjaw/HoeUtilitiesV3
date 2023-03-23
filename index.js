@@ -2,7 +2,7 @@
 /// <reference lib="es2015" />
 
 import Settings from "./config"
-import gui, { mainHUD, jacobHUD, getInspector, orderGUI, TOOL_DISPLAY_INFORMATION, XP_DISPLAY_INFORMATION } from "./utils/constants"
+import guiWrapper, { mainHUD, jacobHUD, getInspector, orderGUI, TOOL_DISPLAY_INFORMATION, XP_DISPLAY_INFORMATION } from "./utils/constants"
 import "./utils/preload";
 import { createToolHUD } from "./elementaHUD/toolHud"
 import { createDebugHud } from "./elementaHUD/debugHud"
@@ -33,17 +33,17 @@ hideOnFlag();
 startBerryAlert();
 
 // pass on events to Elementa
-this.gui.registerDraw((x, y) => this.mainHUD.draw());
-this.gui.registerClicked((x, y, b) => this.mainHUD.mouseClick(x, y, b));
-this.gui.registerMouseDragged((x, y, b) => this.mainHUD.mouseDrag(x, y, b));
-this.gui.registerScrolled((x, y, s) => this.mainHUD.mouseScroll(s));
-this.gui.registerMouseReleased((x, y, b) => this.mainHUD.mouseRelease());
+this.guiWrapper.registerDraw((x, y) => this.mainHUD.draw());
+this.guiWrapper.registerClicked((x, y, b) => this.mainHUD.mouseClick(x, y, b));
+this.guiWrapper.registerMouseDragged((x, y, b) => this.mainHUD.mouseDrag(x, y, b));
+this.guiWrapper.registerScrolled((x, y, s) => this.mainHUD.mouseScroll(s));
+this.guiWrapper.registerMouseReleased((x, y, b) => this.mainHUD.mouseRelease());
 
-this.gui.registerDraw((x, y) => this.jacobHUD.draw());
-this.gui.registerClicked((x, y, b) => this.jacobHUD.mouseClick(x, y, b));
-this.gui.registerMouseDragged((x, y, b) => this.jacobHUD.mouseDrag(x, y, b));
-this.gui.registerScrolled((x, y, s) => this.jacobHUD.mouseScroll(s));
-this.gui.registerMouseReleased((x, y, b) => this.jacobHUD.mouseRelease());
+this.guiWrapper.registerDraw((x, y) => this.jacobHUD.draw());
+this.guiWrapper.registerClicked((x, y, b) => this.jacobHUD.mouseClick(x, y, b));
+this.guiWrapper.registerMouseDragged((x, y, b) => this.jacobHUD.mouseDrag(x, y, b));
+this.guiWrapper.registerScrolled((x, y, s) => this.jacobHUD.mouseScroll(s));
+this.guiWrapper.registerMouseReleased((x, y, b) => this.jacobHUD.mouseRelease());
 
 this.orderGUI.registerDraw((x, y) => this.mainHUD.draw());
 this.orderGUI.registerClicked((x, y, b) => this.mainHUD.mouseClick(x, y, b));
@@ -75,11 +75,13 @@ mainHUD.addChild(orderhud);
 mainHUD.removeChild(orderhud);
 
 register('renderOverlay', () => {
-    if (guiHidden.value && Settings.neverHideJacobsHUD) jacobHUD.draw();
+    if (guiHidden.value && Settings.neverHideJacobsHUD) {
+        jacobHUD.draw();
+    }
     if (!World.isLoaded() || reload || guiHidden.value) return;
     ////////////////////////////////////////////////////
     // change the color of the screen to indicate that the user is in the GUI
-    if (orderGUI.isOpen() || gui.isOpen()) {
+    if (orderGUI.isOpen() || guiWrapper.gui.isOpen()) {
         Renderer.drawRect(
             Renderer.color(0, 0, 0, 70),
             0,

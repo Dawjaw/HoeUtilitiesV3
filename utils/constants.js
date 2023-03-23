@@ -5,8 +5,9 @@ import {
     Window,
     Inspector
 } from "../../Elementa";
+import { GuiCallbackWrapper } from "./guiWrapper";
 
-export default gui = new Gui();
+export default guiWrapper = new GuiCallbackWrapper(new Gui());
 export let orderGUI = new Gui();
 export const mainHUD = new Window();
 export const jacobHUD = new Window();

@@ -2,7 +2,7 @@
 /// <reference lib="es2015" />
 
 import Settings from "../config"
-import gui, { TOOL_DISPLAY_INFORMATION, TOOL_DISPLAY_INFORMATION_HAS_BAR, TOOL_DISPLAY_INFORMATION_TEXT } from "../utils/constants"
+import guiWrapper, { TOOL_DISPLAY_INFORMATION, TOOL_DISPLAY_INFORMATION_HAS_BAR, TOOL_DISPLAY_INFORMATION_TEXT } from "../utils/constants"
 import {
     AdditiveConstraint,
     animate,
@@ -211,7 +211,7 @@ export function createToolHUD() {
             Settings.save();
         })
         .onMouseLeave((comp) => {
-            if (!gui.isOpen()) return;
+            if (!guiWrapper.gui.isOpen()) return;
             animate(comp, (animation) => {
                 animation.setColorAnimation(
                     Animations.OUT_EXP,
@@ -223,7 +223,7 @@ export function createToolHUD() {
             });
         })
         .onMouseEnter((comp) => {
-            if (!gui.isOpen()) return;
+            if (!guiWrapper.gui.isOpen()) return;
             animate(comp, (animation) => {
                 animation.setColorAnimation(
                     Animations.OUT_EXP,
@@ -237,7 +237,7 @@ export function createToolHUD() {
         })
     // hiddenList.push([elementContainer, item, false]);
     mainUIContainer.startTimer(100, 0, function hideAndUnhide() {
-        if (!gui.isOpen()) mainUIContainer.setColor(new ConstantColorConstraint(Settings.colorToolBackground));
+        if (!guiWrapper.gui.isOpen()) mainUIContainer.setColor(new ConstantColorConstraint(Settings.colorToolBackground));
         hiddenList.forEach((list, idx) => {
             if (Settings[list[1]] === false) {
                 if (!list[2]) {

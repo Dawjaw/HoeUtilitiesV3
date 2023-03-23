@@ -2,7 +2,7 @@
 /// <reference lib="es2015" />
 
 import Settings from "../config"
-import gui, { PLAYER_INFORMATION, TOOL_INFORMATION, PET_INFORMATION } from "../utils/constants"
+import guiWrapper, { PLAYER_INFORMATION, TOOL_INFORMATION, PET_INFORMATION } from "../utils/constants"
 import {
     AdditiveConstraint,
     animate,
@@ -99,7 +99,7 @@ function createDebugHudElement(Information, offset) {
             containerX = newX;
         })
         .onMouseLeave((comp) => {
-            if (!gui.isOpen()) return;
+            if (!guiWrapper.gui.isOpen()) return;
             animate(comp, (animation) => {
                 animation.setColorAnimation(
                     Animations.OUT_EXP,
@@ -111,7 +111,7 @@ function createDebugHudElement(Information, offset) {
             });
         })
         .onMouseEnter((comp) => {
-            if (!gui.isOpen()) return;
+            if (!guiWrapper.gui.isOpen()) return;
             animate(comp, (animation) => {
                 animation.setColorAnimation(
                     Animations.OUT_EXP,
