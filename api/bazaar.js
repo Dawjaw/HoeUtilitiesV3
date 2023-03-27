@@ -4,7 +4,7 @@ import { BAZAAR_FARMING_NAMES, BAZAAR_NAME_TO_CROP_NAME, BAZAAR_INFORMATION } fr
 
 export function getBazaarData() {
     let price_sheet = [];
-    axios.get("https://sky.lea.moe/api/bazaar", {
+    axios.get("https://sky.shiiyu.moe/api/bazaar", {
         headers: {
             "User-Agent": "Mozilla/5.0 (ChatTriggers)"
         },

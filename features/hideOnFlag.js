@@ -4,6 +4,8 @@ import { BLOCK_BREAK_OBJECT, TOOL_INFORMATION } from "../utils/constants";
 export let guiHidden = { value: false }
 
 export function hideOnFlag() {
+    let threshold = 0;
+
     register('step', () => {
         if (!World.isLoaded()) return;
 
@@ -12,11 +14,16 @@ export function hideOnFlag() {
                 guiHidden.value = true;
                 break;
             case Settings.hideWhenNotHoldingTool && !TOOL_INFORMATION.isToolHeld:
-                guiHidden.value = true;
+                threshold++;
                 break;
             default:
                 guiHidden.value = false;
+                threshold = 0;
                 break;
         }
-    }).setDelay(2);
+        if (threshold > 20) {
+            guiHidden.value = true;
+            threshold = 0;
+        }
+    }).setFps(20);
 }
