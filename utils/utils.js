@@ -33,5 +33,9 @@ export function getDaedalusAxeBonus(nbt) {
 }
 
 export function getItemRarity(item) {
-    return item?.getLore()?.join().match(/(MYTHIC|COMMON|UNCOMMON|RARE|LEGENDARY|EPIC)/) ? item?.getLore()?.join().match(/(MYTHIC|COMMON|UNCOMMON|RARE|LEGENDARY|EPIC)/)[0] : null;
+    return item?.getLore()?.join()?.match(/(MYTHIC|COMMON|UNCOMMON|RARE|LEGENDARY|EPIC)/) ? item?.getLore()?.join().match(/(MYTHIC|COMMON|UNCOMMON|RARE|LEGENDARY|EPIC)/)[0] : null;
+}
+
+export function getItemRarityNBT(nbt) {
+    return nbt?.tag?.display?.Lore?.join()?.match(/(MYTHIC|COMMON|UNCOMMON|RARE|LEGENDARY|EPIC)/) ? nbt?.tag?.display?.Lore?.join().match(/(MYTHIC|COMMON|UNCOMMON|RARE|LEGENDARY|EPIC)/)[0] : null;
 }

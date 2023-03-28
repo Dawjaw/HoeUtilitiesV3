@@ -1,7 +1,7 @@
 import axios from "../../axios";
 import Settings from "../config";
 import { PET_LEVELS, PET_INFORMATION, COLLECTIONS, PLAYER_INFORMATION, TOOL_INFORMATION, GARDEN_INFORMATION, GREEN_THUMB_ENCHANT, ROOTED, BLOOMING } from "../utils/constants";
-import { getItemRarity } from "../utils/utils";
+import { getItemRarityNBT } from "../utils/utils";
 
 const Base64 = Java.type("java.util.Base64")
 const oldUpdateData = {
@@ -131,7 +131,7 @@ export function getPlayerStats() {
                         if ("enchantments" in newCompound?.tag?.ExtraAttributes?.enchantments) {
                             TOOL_INFORMATION.greenThumb += GREEN_THUMB_ENCHANT[newCompound?.tag?.ExtraAttributes?.enchantments?.green_thumb] * PLAYER_INFORMATION.uniqueVisitors || 0;
                         }
-                        const rarity = getItemRarity(newCompound)
+                        const rarity = getItemRarityNBT(newCompound);
                         switch (newCompound?.tag?.ExtraAttributes?.modifier) {
                             case "rooted":
                                 TOOL_INFORMATION.equipmentBonus += ROOTED[rarity];

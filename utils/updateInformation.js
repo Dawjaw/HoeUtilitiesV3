@@ -27,7 +27,7 @@ export function updateToolInformation() {
         [bootsItem, helmetItem, chestplateItem, leggingsItem].forEach(item => {
             if (item) {
                 const itemNBT = item.getNBT().toObject();
-                const rarity = getItemRarity(itemNBT);
+                const rarity = getItemRarity(item);
                 const extraAttributes = itemNBT?.tag?.ExtraAttributes;
                 switch (extraAttributes?.modifier) {
                     case "mossy":
@@ -171,7 +171,7 @@ export function updateToolInformation() {
         /////////////// Universal Boni ////////////////
         TOOL_INFORMATION.turbo = enchantments?.[`${TOOL_TO_TURBO_ENCHANT[TOOL_INFORMATION.toolCropType]}`] * 5 || 0;
         if (enchantments?.dedication) {
-            TOOL_INFORMATION.dedication = DEDICATION[enchantments.dedication] * gardenMilestones?.[TOOL_INFORMATION.toolCropType] || 0;
+            TOOL_INFORMATION.dedication = enchantments?.dedication ? DEDICATION[enchantments?.dedication] * gardenMilestones?.[TOOL_INFORMATION.toolCropType] : 0;
         }
         TOOL_INFORMATION.farmingForDummies = extraAttributes?.farming_for_dummies_count || 0;
         TOOL_INFORMATION.cultivating = enchantments?.cultivating || 0;
