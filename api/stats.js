@@ -1,6 +1,7 @@
 import axios from "../../axios";
 import Settings from "../config";
-import { PET_LEVELS, PET_INFORMATION, COLLECTIONS, PLAYER_INFORMATION, TOOL_INFORMATION } from "../utils/constants";
+import { PET_LEVELS, PET_INFORMATION, COLLECTIONS, PLAYER_INFORMATION, TOOL_INFORMATION, GARDEN_INFORMATION, GREEN_THUMB_ENCHANT, ROOTED, BLOOMING } from "../utils/constants";
+import { getItemRarity } from "../utils/utils";
 
 const Base64 = Java.type("java.util.Base64")
 const oldUpdateData = {
@@ -62,7 +63,6 @@ export function getPlayerStats() {
                             }
                         });
                         PET_INFORMATION.level = level;
-                        PET_INFORMATION.minosRelic = (pet.heldItem === "MINOS_RELIC");
                     }
                     if (pet.type === "ELEPHANT") {
                         PET_INFORMATION.name = "Elephant";
@@ -75,7 +75,24 @@ export function getPlayerStats() {
                             }
                         });
                         PET_INFORMATION.level = level;
-                        PET_INFORMATION.minosRelic = false;
+                    }
+                    switch (pet.heldItem) {
+                        case "MINOS_RELIC":
+                            PET_INFORMATION.minosRelic = true;
+                            PET_INFORMATION.itemBonus = 0;
+                            break;
+                        case "YELLOW_BANDANA":
+                            PET_INFORMATION.minosRelic = false;
+                            PET_INFORMATION.itemBonus = 30;
+                            break;
+                        case "GREEN_BANDANA":
+                            PET_INFORMATION.minosRelic = false;
+                            PET_INFORMATION.itemBonus = GARDEN_INFORMATION.gardenLevel * 4;
+                            break;
+                        default:
+                            PET_INFORMATION.itemBonus = 0;
+                            PET_INFORMATION.minosRelic = false;
+                            break;
                     }
                 }
             })
@@ -97,6 +114,7 @@ export function getPlayerStats() {
             const pattern2 = /\d+/;
             // get equipment information
             TOOL_INFORMATION.equipmentBonus = 0;
+            TOOL_INFORMATION.greenThumb = 0;
             if ("equippment_contents" in profile_in_use) {
                 const equipmentB64Data = profile_in_use.equippment_contents.data;
                 const decompressedEquipmentData = Base64.getDecoder().decode(equipmentB64Data);
@@ -108,10 +126,47 @@ export function getPlayerStats() {
                     const newCompound = new NBTTagCompound(nbttaglistL.getCompoundTagAt(i)).toObject();
                     if (EQUIPMENT_TAGS.includes(newCompound?.tag?.ExtraAttributes?.id)) {
                         const loreText = newCompound.tag.display.Lore.find(x => x.match(pattern));
-                        //print(parseInt(ChatLib.removeFormatting(loreText).match(pattern2)[0], 10))
                         ChatLib.removeFormatting(loreText).match(pattern2) ? TOOL_INFORMATION.equipmentBonus += parseInt(ChatLib.removeFormatting(loreText).match(pattern2)[0], 10) : 0;
                         TOOL_INFORMATION.equipmentBonus += 5;
-                        //print(TOOL_INFORMATION.equipmentBonus);
+                        if ("enchantments" in newCompound?.tag?.ExtraAttributes?.enchantments) {
+                            TOOL_INFORMATION.greenThumb += GREEN_THUMB_ENCHANT[newCompound?.tag?.ExtraAttributes?.enchantments?.green_thumb] * PLAYER_INFORMATION.uniqueVisitors || 0;
+                        }
+                        const rarity = getItemRarity(newCompound)
+                        switch (newCompound?.tag?.ExtraAttributes?.modifier) {
+                            case "rooted":
+                                TOOL_INFORMATION.equipmentBonus += ROOTED[rarity];
+                                break;
+                            case "blooming":
+                                TOOL_INFORMATION.equipmentBonus += BLOOMING[rarity];
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
+
+            if("talisman_bag" in profile_in_use) {
+                const talismanB64Data = profile_in_use.talisman_bag.data;
+                const decompressedTalismanData = Base64.getDecoder().decode(talismanB64Data);
+                const inputstream = new java.io.ByteArrayInputStream(decompressedTalismanData);
+                const nbt = net.minecraft.nbt.CompressedStreamTools.func_74796_a(inputstream); //CompressedStreamTools.readCompressed()                            
+                const items = nbt.func_150295_c("i", 10); //NBTTagCompound.getTagList()
+                const nbttaglistL = new NBTTagList(items);
+                for (let i = nbttaglistL.tagCount - 1; i >= 0; i--) {
+                    const newCompound = new NBTTagCompound(nbttaglistL.getCompoundTagAt(i)).toObject();
+                    switch (newCompound?.tag?.ExtraAttributes?.id) { 
+                        case "FERMENTO_ARTIFACT":
+                            TOOL_INFORMATION.talismanBonus = 30;
+                            break;
+                        case "SQUASH_RING":
+                            TOOL_INFORMATION.talismanBonus = 20;
+                            break;
+                        case "CROPIE_TALISMAN":
+                            TOOL_INFORMATION.talismanBonus = 10;
+                            break;
+                        default:
+                            break;
                     }
                 }
             }

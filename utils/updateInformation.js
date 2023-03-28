@@ -3,7 +3,8 @@
 
 import {
     TOOL_INFORMATION, TIER_BONUS, RARITIES, PET_INFORMATION, PLAYER_INFORMATION, EXP_REQUIRED_PER_LEVEL, BLOCKS_TO_COLLECTION_TYPE, ARMOR_PIECE_BONUS, FULL_SET_BONUS,
-    MAX_AGE_OF_BLOCKS, TOOL_TO_TURBO_ENCHANT, BLOCK_BREAK_OBJECT, TOOL_DISPLAY_INFORMATION, COLLECTIONS, DROPS_PER_BREAK, BOUNTIFUL, ARMOR_BONUS, BASIC_ITEM_RATES, ROMAN_TO_ARABIC, CROP_TO_IMAGE, currentlyHeldTool
+    MAX_AGE_OF_BLOCKS, TOOL_TO_TURBO_ENCHANT, BLOCK_BREAK_OBJECT, TOOL_DISPLAY_INFORMATION, COLLECTIONS, DROPS_PER_BREAK, BOUNTIFUL, ARMOR_BONUS, BASIC_ITEM_RATES, ROMAN_TO_ARABIC, 
+    CROP_TO_IMAGE, currentlyHeldTool, GARDEN_INFORMATION, DEDICATION, gardenMilestones, EARTHLY, MOSSY, BUSTLNG
 } from "./constants";
 import Settings from "../config";
 import { numberWithCommas, getSkyblockID, getDaedalusAxeBonus, getItemRarity } from "./utils";
@@ -17,6 +18,30 @@ export function updateToolInformation() {
         TOOL_INFORMATION.armorBonus = 0;
         //print(JSON.stringify(getSkyblockID(Player.asPlayerMP().getItemInSlot(4))))
         //print(inGarden)
+
+        const bootsItem = Player.asPlayerMP()?.getItemInSlot(1);
+        const helmetItem = Player.asPlayerMP()?.getItemInSlot(4);
+        const chestplateItem = Player.asPlayerMP()?.getItemInSlot(3);
+        const leggingsItem = Player.asPlayerMP()?.getItemInSlot(2);
+
+        [bootsItem, helmetItem, chestplateItem, leggingsItem].forEach(item => {
+            if (item) {
+                const itemNBT = item.getNBT().toObject();
+                const rarity = getItemRarity(itemNBT);
+                const extraAttributes = itemNBT?.tag?.ExtraAttributes;
+                switch (extraAttributes?.modifier) {
+                    case "mossy":
+                        TOOL_INFORMATION.armorBonus += MOSSY[rarity];
+                        break;
+                    case "bustling":
+                        TOOL_INFORMATION.armorBonus += BUSTLNG[rarity];
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+
 
         if (inGarden && getSkyblockID(Player.asPlayerMP()?.getItemInSlot(1)) === "RANCHERS_BOOTS") {
             TOOL_INFORMATION.armorBonus += PLAYER_INFORMATION.farmingLevel ? Number(PLAYER_INFORMATION.farmingLevel) : 0
@@ -122,14 +147,14 @@ export function updateToolInformation() {
         /////////////// COCO CHOPPER //////////////////
         if (extraAttributes?.id === "COCO_CHOPPER") {
             TOOL_INFORMATION.isToolHeld = true;
-            //TOOL_INFORMATION.itemRate = 20;
+            TOOL_INFORMATION.itemRate = 20;
             TOOL_INFORMATION.toolType = "axe";
         }
 
         /////////////// FUNGI CUTTER //////////////////
         if (extraAttributes?.id === "FUNGI_CUTTER") {
             TOOL_INFORMATION.isToolHeld = true;
-            //TOOL_INFORMATION.itemRate = 30;
+            TOOL_INFORMATION.itemRate = 30;
         }
 
         /////////////// CACTUS KNIFE //////////////////
@@ -145,6 +170,9 @@ export function updateToolInformation() {
 
         /////////////// Universal Boni ////////////////
         TOOL_INFORMATION.turbo = enchantments?.[`${TOOL_TO_TURBO_ENCHANT[TOOL_INFORMATION.toolCropType]}`] * 5 || 0;
+        if (enchantments?.dedication) {
+            TOOL_INFORMATION.dedication = DEDICATION[enchantments.dedication] * gardenMilestones?.[TOOL_INFORMATION.toolCropType] || 0;
+        }
         TOOL_INFORMATION.farmingForDummies = extraAttributes?.farming_for_dummies_count || 0;
         TOOL_INFORMATION.cultivating = enchantments?.cultivating || 0;
         TOOL_INFORMATION.harvesting = enchantments?.harvesting * 12.5 || 0;
@@ -159,6 +187,9 @@ export function updateToolInformation() {
                 TOOL_INFORMATION.bountiful = false;
                 TOOL_INFORMATION.rarity = RARITIES[rarity];
                 break;
+            case "earthly":
+                TOOL_INFORMATION.bountiful = false;
+                TOOL_INFORMATION.rarity = EARTHLY[rarity];
             default:
                 TOOL_INFORMATION.bountiful = false;
                 break;
@@ -311,14 +342,6 @@ export function updatePlayerInformation() {
             Settings.save();
         }
 
-        //ChatLib.chat(`${Date.now()} ${Settings.lastCakeBuff}`)
-        /* its now in the api
-        if (Date.now() < Settings.lastCakeBuff) {
-            PLAYER_INFORMATION.cake = 5;
-        } else {
-            PLAYER_INFORMATION.cake = 0;
-        }*/
-
         PLAYER_INFORMATION.totalFarmingFortune = 100;
         PLAYER_INFORMATION.totalFarmingFortune += PET_INFORMATION.fortune ? PET_INFORMATION.fortune : 0;
         PLAYER_INFORMATION.totalFarmingFortune += TOOL_INFORMATION.cultivating ? TOOL_INFORMATION.cultivating : 0;
@@ -335,13 +358,10 @@ export function updatePlayerInformation() {
         PLAYER_INFORMATION.totalFarmingFortune += TOOL_INFORMATION.armorBonus ? TOOL_INFORMATION.armorBonus : 0;
         PLAYER_INFORMATION.totalFarmingFortune += TOOL_INFORMATION.equipmentBonus ? TOOL_INFORMATION.equipmentBonus : 0;
         PLAYER_INFORMATION.totalFarmingFortune += PLAYER_INFORMATION.gardenCommunityUpgrade ? Settings.gardenCommunityUpgrade * 4 : 0;
-        PLAYER_INFORMATION.totalFarmingFortune += PLAYER_INFORMATION.gardenCropBonus ? PLAYER_INFORMATION.gardenCropBonus : 0;
-
-        if (currentlyHeldTool === "COCO_CHOPPER") {
-            PLAYER_INFORMATION.totalFarmingFortune = PLAYER_INFORMATION.totalFarmingFortune * 1.2;
-        } else if (currentlyHeldTool === "FUNGI_CUTTER") {
-            PLAYER_INFORMATION.totalFarmingFortune = PLAYER_INFORMATION.totalFarmingFortune * 2.0;
-        }
+        PLAYER_INFORMATION.totalFarmingFortune += PLAYER_INFORMATION.gardenCropBonus ? PLAYER_INFORMATION.gardenCropBonus : 0; /// news
+        PLAYER_INFORMATION.totalFarmingFortune += PET_INFORMATION.itemBonus ? PET_INFORMATION.itemBonus : 0;
+        PLAYER_INFORMATION.totalFarmingFortune += GARDEN_INFORMATION.amountofUnlockedPlots * 3 ? GARDEN_INFORMATION.amountofUnlockedPlots * 3 : 0;
+        PLAYER_INFORMATION.totalFarmingFortune += TOOL_INFORMATION.dedication ? TOOL_INFORMATION.dedication : 0;
 
         TOOL_DISPLAY_INFORMATION.showToolFarmingFortune = PLAYER_INFORMATION.totalFarmingFortune;
     }).setFps(5);

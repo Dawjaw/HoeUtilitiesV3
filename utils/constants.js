@@ -37,6 +37,9 @@ export const TOOL_INFORMATION = {
     bountiful: false,
     armorBonus: 0,
     equipmentBonus: 0,
+    talismanBonus: 0,
+    dedication: 0,
+    greenThumb: 0,
 }
 
 export const RARITIES = {
@@ -57,6 +60,69 @@ export const BASIC_ITEM_RATES = {
 
 export const TIER_BONUS = [10, 25, 50];
 
+export const GREEN_THUMB = { // hoe
+    COMMON: 1,
+    UNCOMMON: 2,
+    RARE: 3,
+    EPIC: 4,
+    LEGENDARY: 5,
+    MYTHIC: 6
+}
+
+export const ROBUST = { // hoe
+    COMMON: 2,
+    UNCOMMON: 3,
+    RARE: 4,
+    EPIC: 6,
+    LEGENDARY: 8,
+    MYTHIC: 10
+}
+
+export const ROOTED = { // equipment
+    COMMON: 4,
+    UNCOMMON: 6,
+    RARE: 8,
+    EPIC: 10,
+    LEGENDARY: 12,
+    MYTHIC: 15
+}
+
+export const BLOOMING = { // equipment
+    COMMON: 1,
+    UNCOMMON: 2,
+    RARE: 3,
+    EPIC: 4,
+    LEGENDARY: 5,
+    MYTHIC: 6
+}
+
+export const EARTHLY = { // Axes
+    COMMON: 1,
+    UNCOMMON: 4,
+    RARE: 6,
+    EPIC: 8,
+    LEGENDARY: 10,
+    MYTHIC: 12
+}
+
+export const MOSSY = { // Armor
+    COMMON: 5,
+    UNCOMMON: 10,
+    RARE: 15,
+    EPIC: 20,
+    LEGENDARY: 25,
+    MYTHIC: 30
+}
+
+export const BUSTLNG = { // Armor
+    COMMON: 1,
+    UNCOMMON: 2,
+    RARE: 4,
+    EPIC: 6,
+    LEGENDARY: 8,
+    MYTHIC: 10
+}
+
 export const BOUNTIFUL = {
     COMMON: 1,
     UNCOMMON: 2,
@@ -65,6 +131,26 @@ export const BOUNTIFUL = {
     LEGENDARY: 7,
     MYTHIC: 10,
 }
+
+export const DEDICATION = [0, 0.5, 0.75, 1, 2];
+export const GREEN_THUMB_ENCHANT = [0, 0.05, 0.1, 0.15, 0.2, 0.25]
+
+export const GARDEN_INFORMATION = {
+    gardenLevel: 0,
+    amountofUnlockedPlots: 0,
+}
+
+export const gardenMilestones = {
+    'cocoa': 0,
+    'wart': 0,
+    'carrot': 0,
+    'pumpkin': 0,
+    'cane': 0,
+    'wheat': 0,
+    'potato': 0,
+    'melon': 0,
+    'mushroom': 0
+};
 
 export const ARMOR_PIECE_BONUS = {
     'melon': [0, 10, 20, 30],
@@ -204,6 +290,7 @@ export const PET_INFORMATION = {
     name: "",
     minosRelic: false,
     fortune: 0,
+    itemBonus: 0,
 }
 
 export const TOOL_TO_TURBO_ENCHANT = {
@@ -249,6 +336,7 @@ export const PLAYER_INFORMATION = {
     totalFarmingFortune: 0,
     gardenCropBonus: 0,
     gardenCommunityUpgrade: 0,
+    uniqueVisitors: 0,
 }
 
 export const COLLECTIONS = {
