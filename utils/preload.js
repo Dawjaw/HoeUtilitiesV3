@@ -97,7 +97,7 @@ register("command", (arg1, arg2) => {
         ChatLib.chat("§aType §6/hu3debug §ato print out a breakdown of your farming fortune.§r");
         const clickableMessage = new Message(
             "§aIf you have any issues, please report them on the ",
-            new TextComponent("github page.§r").setClick("open_url", "https://github.com/Dawjaw/HoeUtilitiesV2"),
+            new TextComponent("github page.§r").setClick("open_url", "https://github.com/Dawjaw/HoeUtilitiesV3"),
             "."
         );
         ChatLib.chat(clickableMessage);
@@ -129,6 +129,7 @@ register('command', () => {
     ChatLib.chat(`Plot bonus : ${GARDEN_INFORMATION.amountofUnlockedPlots * 3}`);
 }).setName("hu3debug");
 
+new Image("wart.png", "https://dawjaw.net/static/wart.png"); // dirty fix
 
 function loadImages() {
     new Image("carrot.png", "https://dawjaw.net/static/carrot.png");
@@ -140,7 +141,7 @@ function loadImages() {
     new Image("potato.png", "https://dawjaw.net/static/potato.png");
     new Image("mushroom.png", "https://dawjaw.net/static/mushroom.png");
     new Image("wheat.png", "https://dawjaw.net/static/wheat.png");
-    new Image("netherwart.png", "https://dawjaw.net/static/wart.png");
+    new Image("wart.png", "https://dawjaw.net/static/wart.png");
     /*
     Image.fromUrl("https://dawjaw.net/static/carrot.png", "carrot.png");
     Image.fromUrl("https://dawjaw.net/static/melon.png", "melon.png");
