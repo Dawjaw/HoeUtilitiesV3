@@ -5,5 +5,5 @@
     "requires": ["Vigilance", "axios", "Elementa"],
     "description": "Beta version of HoeUtilitiesV2",
     "version": "3.4.0",
-    "changelog": "§c[HU3]§r §2Fix for gui move§r"
+    "changelog": "§c[HU3]§r §2Big Update for Garden v1.5. Please report any issues or inconsistencies on https://www.github.com/Dawjaw/HoeUtilitiesV3/issues or dm Dawjaw#0001§r"
 }
