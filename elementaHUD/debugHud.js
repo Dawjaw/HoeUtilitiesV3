@@ -2,7 +2,7 @@
 /// <reference lib="es2015" />
 
 import Settings from "../config"
-import guiWrapper, { PLAYER_INFORMATION, TOOL_INFORMATION, PET_INFORMATION } from "../utils/constants"
+import guiWrapper, { PLAYER_INFORMATION, TOOL_INFORMATION, PET_INFORMATION, GARDEN_INFORMATION } from "../utils/constants"
 import {
     AdditiveConstraint,
     animate,
@@ -25,7 +25,7 @@ export function getJavaColor(color){
 }
 
 export function createDebugHud() {
-    return [createDebugHudElement(PLAYER_INFORMATION, 200), createDebugHudElement(TOOL_INFORMATION, 400), createDebugHudElement(PET_INFORMATION, 600)];
+    return [createDebugHudElement(PLAYER_INFORMATION, 200), createDebugHudElement(TOOL_INFORMATION, 350), createDebugHudElement(PET_INFORMATION, 500), createDebugHudElement(GARDEN_INFORMATION, 650)];
 }
 
 

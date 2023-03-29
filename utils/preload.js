@@ -2,7 +2,7 @@
 /// <reference lib="es2015"/>
 
 import Settings from "../config";
-import guiWrapper, { PLAYER_INFORMATION, TOOL_INFORMATION, PET_INFORMATION } from "../utils/constants";
+import guiWrapper, { PLAYER_INFORMATION, TOOL_INFORMATION, PET_INFORMATION, GARDEN_INFORMATION } from "../utils/constants";
 
 if (Settings.gardenCropUpgradeMap === "") {
     Settings.gardenCropUpgradeMap = "{}";
@@ -120,9 +120,13 @@ register('command', () => {
     ChatLib.chat(`garden crop bonus: ${PLAYER_INFORMATION.gardenCropBonus}`);
     ChatLib.chat(`cake: ${PLAYER_INFORMATION.cake}`);
     ChatLib.chat(`pet: ${PET_INFORMATION.fortune}`);
+    ChatLib.chat(`pet Item Bonus: ${PET_INFORMATION.itemBonus}`);
     ChatLib.chat(`anita: ${PLAYER_INFORMATION.anita}`);
     ChatLib.chat(`armor: ${TOOL_INFORMATION.armorBonus}`);
     ChatLib.chat(`equipment: ${TOOL_INFORMATION.equipmentBonus}`);
+    ChatLib.chat(`green thumb : ${TOOL_INFORMATION.greenThumb}`);
+    ChatLib.chat(`dedication : ${TOOL_INFORMATION.dedication}`);
+    ChatLib.chat(`Plot bonus : ${GARDEN_INFORMATION.amountofUnlockedPlots * 3}`);
 }).setName("hu3debug");
 
 

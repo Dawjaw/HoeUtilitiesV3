@@ -120,15 +120,15 @@ export function updateToolInformation() {
         /////////////// Math Hoe ///////////////////
         if (extraAttributes?.id?.match(/HOE_(CANE|POTATO|CARROT|WHEAT|WARTS)/)) {
             TOOL_INFORMATION.isToolHeld = true;
+            TOOL_INFORMATION.counter = extraAttributes?.mined_crops || 0;
             const re = new RegExp(TOOL_INFORMATION.toolCropType, 'g');
             if (extraAttributes?.id?.toLowerCase()?.match(re) && TOOL_INFORMATION.toolCropType !== "") {
-                TOOL_INFORMATION.counter = extraAttributes?.mined_crops || 0;
                 TOOL_INFORMATION.tierBonus = TIER_BONUS[extraAttributes?.id?.split("_").pop() - 1] || 0;
                 heldItem.getLore().forEach(lore => {
                     const formattingRemoved = ChatLib.removeFormatting(lore);
-                    const farmFortuneMatch = formattingRemoved?.match(/\+[0-9]+ ☘ Farming Fortune for/);
+                    const farmFortuneMatch = formattingRemoved?.match(/You have \+[0-9]+☘ Farming Fortune/);
                     if (farmFortuneMatch) {
-                        const itemRateMatch = farmFortuneMatch[0].split(" ")[0].replace("+", "");
+                        const itemRateMatch = farmFortuneMatch[0].split(" ")[2].replace("+", "").replace("☘", "");
                         TOOL_INFORMATION.itemRate += Number(itemRateMatch);
                     }
                 });
@@ -170,9 +170,7 @@ export function updateToolInformation() {
 
         /////////////// Universal Boni ////////////////
         TOOL_INFORMATION.turbo = enchantments?.[`${TOOL_TO_TURBO_ENCHANT[TOOL_INFORMATION.toolCropType]}`] * 5 || 0;
-        if (enchantments?.dedication) {
-            TOOL_INFORMATION.dedication = enchantments?.dedication ? DEDICATION[enchantments?.dedication] * gardenMilestones?.[TOOL_INFORMATION.toolCropType] : 0;
-        }
+        TOOL_INFORMATION.dedication = enchantments?.dedication ? DEDICATION[enchantments?.dedication] * gardenMilestones?.[TOOL_INFORMATION.toolCropType] : 0;
         TOOL_INFORMATION.farmingForDummies = extraAttributes?.farming_for_dummies_count || 0;
         TOOL_INFORMATION.cultivating = enchantments?.cultivating || 0;
         TOOL_INFORMATION.harvesting = enchantments?.harvesting * 12.5 || 0;
@@ -194,6 +192,7 @@ export function updateToolInformation() {
                 TOOL_INFORMATION.bountiful = false;
                 break;
         }
+        gardenMilestones = JSON.parse(Settings.gardenCropMilestoneMap);
         if (inGarden) {
             PLAYER_INFORMATION.gardenCropBonus = JSON.parse(Settings.gardenCropUpgradeMap)[TOOL_INFORMATION.toolCropType] || 0;
             PLAYER_INFORMATION.gardenCommunityUpgrade = Settings.gardenCommunityUpgrade * 4 || 0;
@@ -201,7 +200,9 @@ export function updateToolInformation() {
             PLAYER_INFORMATION.gardenCropBonus = 0;
             PLAYER_INFORMATION.gardenCommunityUpgrade = 0;
         }
-
+        GARDEN_INFORMATION.gardenLevel = Settings.gardenLevel;
+        GARDEN_INFORMATION.amountofUnlockedPlots = Settings.unlockedPlots;
+        PLAYER_INFORMATION.uniqueVisitors = Settings.uniqueVisitors;
         TOOL_DISPLAY_INFORMATION.showToolCounter = (TOOL_INFORMATION.counter) ? numberWithCommas(TOOL_INFORMATION.counter) : "Equip a Tool";
         TOOL_DISPLAY_INFORMATION.showToolCultivating = (TOOL_INFORMATION.farmedCultivating) ? numberWithCommas(TOOL_INFORMATION.farmedCultivating) : "Equip a Tool";
         TOOL_DISPLAY_INFORMATION.showToolCollection = (COLLECTIONS[TOOL_INFORMATION.toolCropType]) ? numberWithCommas(COLLECTIONS[TOOL_INFORMATION.toolCropType].toFixed(0)) : "Break a Crop";
@@ -275,7 +276,7 @@ export function updatePetInformation() {
 
 export function updatePlayerInformation() {
     register('step', () => {
-        if (inGarden && PLAYER_INFORMATION.strength === 0) {
+        if (inGarden && PLAYER_INFORMATION.strength === 0 && PET_INFORMATION.name === "Mooshroom Cow") {
             ChatLib.chat("&2Please open the SkyBlock Menu to update your strength stat§r");
         }
     }).setDelay(120);
@@ -291,7 +292,7 @@ export function updatePlayerInformation() {
     }).setName("setgardenupgrade");
 
     register('step', () => {
-        if (World.isLoaded() && !inGarden) {
+        if (World.isLoaded()) {
             TabList?.getNames()?.forEach(name => {
                 let rowString = ChatLib.removeFormatting(name);
                 if (rowString.includes("Strength")) {
@@ -318,6 +319,56 @@ export function updatePlayerInformation() {
             if (ChatLib.removeFormatting(str)?.replace(",", "")?.match(/Strength ([0-9]+)/)) {
                 PLAYER_INFORMATION.strength = Number(ChatLib.removeFormatting(str)?.replace(",", "")?.match(/Strength ([0-9]+)/)[1]);
             }
+        }
+
+        if (Player.getContainer()?.getName() === "Desk") {
+            const romanVariant = ChatLib.removeFormatting(Player.getContainer()?.getStackInSlot(4)?.getLore()[0].split(" ")[2]);
+            GARDEN_INFORMATION.gardenLevel = Number(ROMAN_TO_ARABIC[romanVariant]);
+            Settings.gardenLevel = GARDEN_INFORMATION.gardenLevel;
+            Settings.save();
+        }
+
+        if (Player.getContainer()?.getName() === "Configure Plots") {
+            let unlockedPlots = 24;
+            Player.getContainer()?.getItems().slice(0, 53).forEach(item => {
+                if (item?.getLore()[0].includes("Plot")) {
+                    if (item?.getLore()[1].includes("Requirement")) {
+                        unlockedPlots--;
+                    }
+                }
+            });
+            GARDEN_INFORMATION.amountofUnlockedPlots = unlockedPlots;
+            Settings.unlockedPlots = unlockedPlots;
+            Settings.save();
+        }
+
+        if (Player.getContainer()?.getName() === "Crop Milestones") {
+            Player.getContainer()?.getItems().slice(0, 27).forEach(item => {
+                if (item?.getLore().length > 5) {
+                    if (item?.getLore()[0].split(" ").length > 2) {
+                        const cropName = CROP_TO_IMAGE[ChatLib.removeFormatting(item?.getLore()[0].split(" ").splice(0, 2).join(" "))];
+                        const level = ROMAN_TO_ARABIC[ChatLib.removeFormatting(item?.getLore()[0].split(" ")[2])];
+                        gardenMilestones[cropName] = level;
+                    } else {
+                        const cropName = CROP_TO_IMAGE[ChatLib.removeFormatting(item?.getLore()[0].split(" ")[0])];
+                        const level = ROMAN_TO_ARABIC[ChatLib.removeFormatting(item?.getLore()[0].split(" ")[1])];
+                        gardenMilestones[cropName] = level;
+                    }
+
+                }
+            });
+            Settings.gardenCropMilestoneMap = JSON.stringify(gardenMilestones);
+            Settings.save();
+        }
+
+        if (Player.getContainer()?.getName() === "Visitor Milestones") {
+            const uniqueVisitorMilestones = [0, 1, 5, 10, 20, 30, 40, 50, 60, 70, 80]
+            const lore = Player.getContainer()?.getStackInSlot(21)?.getLore();
+            const currentLevel = ROMAN_TO_ARABIC[ChatLib.removeFormatting(lore[6]).split(" ")[3].replace(":", "")]-1;
+            const currentProgress = ChatLib.removeFormatting(lore[7]).split("/")[0].slice(-1);
+            PLAYER_INFORMATION.uniqueVisitors = uniqueVisitorMilestones[currentLevel] + Number(currentProgress);
+            Settings.uniqueVisitors = PLAYER_INFORMATION.uniqueVisitors;
+            Settings.save();
         }
 
         if (Player.getContainer()?.getName() === "Community Shop") {
@@ -362,6 +413,7 @@ export function updatePlayerInformation() {
         PLAYER_INFORMATION.totalFarmingFortune += PET_INFORMATION.itemBonus ? PET_INFORMATION.itemBonus : 0;
         PLAYER_INFORMATION.totalFarmingFortune += GARDEN_INFORMATION.amountofUnlockedPlots * 3 ? GARDEN_INFORMATION.amountofUnlockedPlots * 3 : 0;
         PLAYER_INFORMATION.totalFarmingFortune += TOOL_INFORMATION.dedication ? TOOL_INFORMATION.dedication : 0;
+        PLAYER_INFORMATION.totalFarmingFortune += TOOL_INFORMATION.greenThumb ? Number(TOOL_INFORMATION.greenThumb.toFixed(2)) : 0;
 
         TOOL_DISPLAY_INFORMATION.showToolFarmingFortune = PLAYER_INFORMATION.totalFarmingFortune;
     }).setFps(5);

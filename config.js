@@ -67,6 +67,42 @@ class Settings {
     })
     gardenCropUpgradeMap = "{}"
 
+    @TextProperty({
+        name: "Garden Crop Milestone Map",
+        description: "Set your garden crop milestone map",
+        category: "General",
+        subcategory: "Settings",
+        hidden: true
+    })
+    gardenCropMilestoneMap = "{}"
+
+    @NumberProperty({
+        name: "Garden level",
+        description: "Set your garden level",
+        category: "General",
+        subcategory: "Settings",
+        hidden: true
+    })
+    gardenLevel = 0;
+
+    @NumberProperty({
+        name: "Unlocked Plots",
+        description: "Set your unlocked plots",
+        category: "General",
+        subcategory: "Settings",
+        hidden: true
+    })
+    unlockedPlots = 0;
+
+    @NumberProperty({
+        name: "Unique Visitors",
+        description: "Set your unique visitors",
+        category: "General",
+        subcategory: "Settings",
+        hidden: true
+    })
+    uniqueVisitors = 0;
+
     @NumberProperty({
         name: "Garden community Upgrade",
         description: "Set your garden crop upgrade",

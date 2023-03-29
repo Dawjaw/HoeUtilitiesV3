@@ -128,7 +128,7 @@ export function getPlayerStats() {
                         const loreText = newCompound.tag.display.Lore.find(x => x.match(pattern));
                         ChatLib.removeFormatting(loreText).match(pattern2) ? TOOL_INFORMATION.equipmentBonus += parseInt(ChatLib.removeFormatting(loreText).match(pattern2)[0], 10) : 0;
                         TOOL_INFORMATION.equipmentBonus += 5;
-                        if ("enchantments" in newCompound?.tag?.ExtraAttributes?.enchantments) {
+                        if ("enchantments" in newCompound?.tag?.ExtraAttributes) {
                             TOOL_INFORMATION.greenThumb += GREEN_THUMB_ENCHANT[newCompound?.tag?.ExtraAttributes?.enchantments?.green_thumb] * PLAYER_INFORMATION.uniqueVisitors || 0;
                         }
                         const rarity = getItemRarityNBT(newCompound);
