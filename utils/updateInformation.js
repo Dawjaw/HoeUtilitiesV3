@@ -322,10 +322,17 @@ export function updatePlayerInformation() {
         }
 
         if (Player.getContainer()?.getName() === "Desk") {
-            const romanVariant = ChatLib.removeFormatting(Player.getContainer()?.getStackInSlot(4)?.getLore()[0].split(" ")[2]);
-            GARDEN_INFORMATION.gardenLevel = Number(ROMAN_TO_ARABIC[romanVariant]);
-            Settings.gardenLevel = GARDEN_INFORMATION.gardenLevel;
-            Settings.save();
+            if (Player.getContainer()?.getStackInSlot(4)?.getLore()?.length > 1) {
+                const romanVariant = ChatLib.removeFormatting(Player.getContainer()?.getStackInSlot(4)?.getLore()[0].split(" ")[2]);
+                if (isNaN(romanVariant)) {
+                    GARDEN_INFORMATION.gardenLevel = Number(ROMAN_TO_ARABIC[romanVariant]);
+                }
+                else {
+                    GARDEN_INFORMATION.gardenLevel = Number(romanVariant);
+                }
+                Settings.gardenLevel = GARDEN_INFORMATION.gardenLevel;
+                Settings.save();
+            }
         }
 
         if (Player.getContainer()?.getName() === "Configure Plots") {
@@ -346,15 +353,14 @@ export function updatePlayerInformation() {
             Player.getContainer()?.getItems().slice(0, 27).forEach(item => {
                 if (item?.getLore().length > 5) {
                     if (item?.getLore()[0].split(" ").length > 2) {
-                        const cropName = CROP_TO_IMAGE[ChatLib.removeFormatting(item?.getLore()[0].split(" ").splice(0, 2).join(" "))];
-                        const level = ROMAN_TO_ARABIC[ChatLib.removeFormatting(item?.getLore()[0].split(" ")[2])];
-                        gardenMilestones[cropName] = level;
-                    } else {
-                        const cropName = CROP_TO_IMAGE[ChatLib.removeFormatting(item?.getLore()[0].split(" ")[0])];
-                        const level = ROMAN_TO_ARABIC[ChatLib.removeFormatting(item?.getLore()[0].split(" ")[1])];
-                        gardenMilestones[cropName] = level;
+                        let cropName = CROP_TO_IMAGE[ChatLib.removeFormatting(item?.getLore()[0].split(" ").splice(0, 2).join(" "))];
+                        let level = ChatLib.removeFormatting(item?.getLore()[0].split(" ")[2]);
+                        if (isNaN(level)) {
+                            gardenMilestones[cropName] = ROMAN_TO_ARABIC[ChatLib.removeFormatting(item?.getLore()[0].split(" ")[2])];
+                        } else {
+                            gardenMilestones[cropName] = ChatLib.removeFormatting(item?.getLore()[0].split(" ")[1]);
+                        }
                     }
-
                 }
             });
             Settings.gardenCropMilestoneMap = JSON.stringify(gardenMilestones);
@@ -364,16 +370,22 @@ export function updatePlayerInformation() {
         if (Player.getContainer()?.getName() === "Visitor Milestones") {
             const uniqueVisitorMilestones = [0, 1, 5, 10, 20, 30, 40, 50, 60, 70, 80]
             const lore = Player.getContainer()?.getStackInSlot(21)?.getLore();
-            const currentLevel = ROMAN_TO_ARABIC[ChatLib.removeFormatting(lore[6]).split(" ")[3].replace(":", "")]-1;
-            const currentProgress = ChatLib.removeFormatting(lore[7]).split("/")[0].slice(-1);
-            PLAYER_INFORMATION.uniqueVisitors = uniqueVisitorMilestones[currentLevel] + Number(currentProgress);
+            if (isNaN(ChatLib.removeFormatting(lore[6]).split(" ")[3].replace(":", ""))) {
+                PLAYER_INFORMATION.uniqueVisitors = uniqueVisitorMilestones[ROMAN_TO_ARABIC[ChatLib.removeFormatting(lore[6]).split(" ")[3].replace(":", "")]-1] + Number(ChatLib.removeFormatting(lore[7]).split("/")[0].slice(-1));
+            } else {
+                PLAYER_INFORMATION.uniqueVisitors = uniqueVisitorMilestones[ChatLib.removeFormatting(lore[6]).split(" ")[3].replace(":", "")] + Number(ChatLib.removeFormatting(lore[7]).split("/")[0].slice(-1));
+            }
             Settings.uniqueVisitors = PLAYER_INFORMATION.uniqueVisitors;
             Settings.save();
         }
 
         if (Player.getContainer()?.getName() === "Community Shop") {
             if (Player.getContainer()?.getStackInSlot(44)?.getName()?.includes("Garden Farming Fortune")) {
-                Settings.gardenCommunityUpgrade = Number(ROMAN_TO_ARABIC[ChatLib.removeFormatting(Player.getContainer()?.getStackInSlot(44)?.getName()).split(" ").pop()]);
+                if (isNaN(ChatLib.removeFormatting(Player.getContainer()?.getStackInSlot(44)?.getName()).split(" ").pop())) {
+                    Settings.gardenCommunityUpgrade = Number(ROMAN_TO_ARABIC[ChatLib.removeFormatting(Player.getContainer()?.getStackInSlot(44)?.getName()).split(" ").pop()]);
+                } else {
+                    Settings.gardenCommunityUpgrade = Number(ChatLib.removeFormatting(Player.getContainer()?.getStackInSlot(44)?.getName()).split(" ").pop());
+                }
                 Settings.save();
             }
         }
