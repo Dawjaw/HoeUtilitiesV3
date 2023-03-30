@@ -331,7 +331,7 @@ export function updatePlayerInformation() {
         if (Player.getContainer()?.getName() === "Configure Plots") {
             let unlockedPlots = 24;
             Player.getContainer()?.getItems().slice(0, 53).forEach(item => {
-                if (item?.getLore()[0].includes("Plot")) {
+                if (item?.getLore()?.join()?.includes("Plot")) {
                     if (item?.getLore()[1].includes("Requirement")) {
                         unlockedPlots--;
                     }
