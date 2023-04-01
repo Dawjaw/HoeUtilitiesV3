@@ -371,7 +371,6 @@ export function updatePlayerInformation() {
                     }
                 }
             });
-            print(JSON.stringify(gardenMilestones));
             Settings.gardenCropMilestoneMap = JSON.stringify(gardenMilestones);
             Settings.save();
         }
