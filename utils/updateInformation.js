@@ -351,18 +351,27 @@ export function updatePlayerInformation() {
 
         if (Player.getContainer()?.getName() === "Crop Milestones") {
             Player.getContainer()?.getItems().slice(0, 27).forEach(item => {
-                if (item?.getLore().length > 5) {
+                if (item?.getLore()?.length > 5) {
                     if (item?.getLore()[0].split(" ").length > 2) {
                         let cropName = CROP_TO_IMAGE[ChatLib.removeFormatting(item?.getLore()[0].split(" ").splice(0, 2).join(" "))];
                         let level = ChatLib.removeFormatting(item?.getLore()[0].split(" ")[2]);
                         if (isNaN(level)) {
                             gardenMilestones[cropName] = ROMAN_TO_ARABIC[ChatLib.removeFormatting(item?.getLore()[0].split(" ")[2])];
                         } else {
+                            gardenMilestones[cropName] = ChatLib.removeFormatting(item?.getLore()[0].split(" ")[2]);
+                        }
+                    } else {
+                        let cropName = CROP_TO_IMAGE[ChatLib.removeFormatting(item?.getLore()[0].split(" ")[0])];
+                        let level = ChatLib.removeFormatting(item?.getLore()[0].split(" ")[1]);
+                        if (isNaN(level)) {
+                            gardenMilestones[cropName] = ROMAN_TO_ARABIC[ChatLib.removeFormatting(item?.getLore()[0].split(" ")[1])];
+                        } else {
                             gardenMilestones[cropName] = ChatLib.removeFormatting(item?.getLore()[0].split(" ")[1]);
                         }
                     }
                 }
             });
+            print(JSON.stringify(gardenMilestones));
             Settings.gardenCropMilestoneMap = JSON.stringify(gardenMilestones);
             Settings.save();
         }
