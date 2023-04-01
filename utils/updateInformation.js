@@ -337,7 +337,7 @@ export function updatePlayerInformation() {
 
         if (Player.getContainer()?.getName() === "Configure Plots") {
             let unlockedPlots = 24;
-            Player.getContainer()?.getItems().slice(0, 53).forEach(item => {
+            Player.getContainer()?.getItems()?.slice(0, 53)?.forEach(item => {
                 if (item?.getLore()?.join()?.includes("Plot")) {
                     if (item?.getLore()[1].includes("Requirement")) {
                         unlockedPlots--;
@@ -403,7 +403,7 @@ export function updatePlayerInformation() {
 
         if (Player.getContainer()?.getName() === "Crop Upgrades") {
             let myMappingObject = {};
-            Player.getContainer().getItems().slice(0, 44).forEach(item => {
+            Player.getContainer()?.getItems()?.slice(0, 44)?.forEach(item => {
                 if (NAMES_CROPS.includes(ChatLib.removeFormatting(item?.getName()))) {
                     const cropName = ChatLib.removeFormatting(item?.getName());
                     const CropValue = ChatLib.removeFormatting(item?.getLore().find(lore => lore.includes("Current Tier"))).split(" ").pop().split("/")[0] * 5;
