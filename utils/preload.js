@@ -126,6 +126,7 @@ register('command', () => {
     ChatLib.chat(`equipment: ${TOOL_INFORMATION.equipmentBonus}`);
     ChatLib.chat(`green thumb : ${TOOL_INFORMATION.greenThumb}`);
     ChatLib.chat(`dedication : ${TOOL_INFORMATION.dedication}`);
+    ChatLib.chat(`talisman : ${TOOL_INFORMATION.talismanBonus}`);
     ChatLib.chat(`Plot bonus : ${GARDEN_INFORMATION.amountofUnlockedPlots * 3}`);
 }).setName("hu3debug");
 

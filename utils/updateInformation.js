@@ -381,7 +381,7 @@ export function updatePlayerInformation() {
             if (isNaN(ChatLib.removeFormatting(lore[6]).split(" ")[3].replace(":", ""))) {
                 PLAYER_INFORMATION.uniqueVisitors = uniqueVisitorMilestones[ROMAN_TO_ARABIC[ChatLib.removeFormatting(lore[6]).split(" ")[3].replace(":", "")]-1] + Number(ChatLib.removeFormatting(lore[7]).split("/")[0].slice(-1));
             } else {
-                PLAYER_INFORMATION.uniqueVisitors = uniqueVisitorMilestones[ChatLib.removeFormatting(lore[6]).split(" ")[3].replace(":", "")] + Number(ChatLib.removeFormatting(lore[7]).split("/")[0].slice(-1));
+                PLAYER_INFORMATION.uniqueVisitors = uniqueVisitorMilestones[ChatLib.removeFormatting(lore[6]).split(" ")[3].replace(":", "")-1] + Number(ChatLib.removeFormatting(lore[7]).split("/")[0].slice(-1));
             }
             Settings.uniqueVisitors = PLAYER_INFORMATION.uniqueVisitors;
             Settings.save();
@@ -434,6 +434,7 @@ export function updatePlayerInformation() {
         PLAYER_INFORMATION.totalFarmingFortune += GARDEN_INFORMATION.amountofUnlockedPlots * 3 ? GARDEN_INFORMATION.amountofUnlockedPlots * 3 : 0;
         PLAYER_INFORMATION.totalFarmingFortune += TOOL_INFORMATION.dedication ? TOOL_INFORMATION.dedication : 0;
         PLAYER_INFORMATION.totalFarmingFortune += TOOL_INFORMATION.greenThumb ? Number(TOOL_INFORMATION.greenThumb.toFixed(2)) : 0;
+        PLAYER_INFORMATION.totalFarmingFortune += TOOL_INFORMATION.talismanBonus ? TOOL_INFORMATION.talismanBonus : 0;
 
         TOOL_DISPLAY_INFORMATION.showToolFarmingFortune = PLAYER_INFORMATION.totalFarmingFortune;
     }).setFps(5);
