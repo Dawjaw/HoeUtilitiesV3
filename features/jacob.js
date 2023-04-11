@@ -2,6 +2,7 @@ import guiWrapper from "../utils/constants";
 import Settings from "../config";
 import axios from "../../axios";
 import { CROP_TO_IMAGE } from "../utils/constants";
+import { registerTickTrigger } from "../utils/utils";
 import {
     AdditiveConstraint,
     ChildBasedRangeConstraint,
@@ -81,7 +82,7 @@ export class JacobFeature {
     constructor(window) {
         this.window = window;
 
-        this.register = register("tick", () => {
+        this.register = registerTickTrigger("Jacob GUI register for management", () => {
             // Add the component if it should be added and isn't already part of the window
             if (Settings.jacobHudEnabled && !window.children.includes(JacobFeature.container)) {
                 window.addChild(JacobFeature.container);

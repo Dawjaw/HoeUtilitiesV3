@@ -1,6 +1,8 @@
 import { getSkyblockID } from '../utils/utils.js';
 import { BLOCK_BREAK_OBJECT } from "../utils/constants";
 import Settings from "../config";
+import { registerStepTriggerFps } from '../utils/utils.js';
+import { registerPacketReceivedTrigger } from '../utils/utils.js';
 
 const File = Java.type('java.io.File');
 
@@ -8,7 +10,7 @@ export function startBerryAlert() {
     const S2FPacketSetSlot = Java.type('net.minecraft.network.play.server.S2FPacketSetSlot');
     const dyeSound = new Sound({source: new File(Config.modulesFolder + "/HoeUtilitiesV3/assets/dyeSound.ogg").getName(), volume: 1, priority: true});
 
-    register('packetReceived', (packet) => {
+    registerPacketReceivedTrigger('StrawBerry sound packets', (packet) => {
         if (packet instanceof S2FPacketSetSlot) {
             if (packet?.func_149174_e() !== null) {
                 if (getSkyblockID(new Item(packet?.func_149174_e())) === "DYE_WILD_STRAWBERRY" && ((Date.now() - BLOCK_BREAK_OBJECT.timeSinceLastBreak) / 1000) < 5) {
@@ -43,9 +45,9 @@ export function startBerryAlert() {
         World.playSound(sound, volume, pitch);
     }
 
-    register('step', () => {
+    registerStepTriggerFps('StrawBerry Sound Updater', () => {
         if (!World.isLoaded() || !Settings.useCustomStrawberrySound) return;
         dyeSound?.setPosition(Player.getX(), Player.getY(), Player.getZ());
         dyeSound?.setVolume(1);
-    }).setFps(60);
+    }, 60);
 }

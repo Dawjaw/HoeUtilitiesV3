@@ -5,6 +5,9 @@
 !.vscode/extensions.json
 !.vscode/*.code-snippets
 
+# Temporary Files
+debugOut.json
+
 # Local History for Visual Studio Code
 .history/
 

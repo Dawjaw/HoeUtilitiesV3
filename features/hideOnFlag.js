@@ -1,12 +1,13 @@
 import Settings from '../config';
 import { BLOCK_BREAK_OBJECT, TOOL_INFORMATION } from "../utils/constants";
+import { registerStepTriggerFps } from '../utils/utils';
 
 export let guiHidden = { value: false }
 
 export function hideOnFlag() {
     let threshold = 0;
 
-    register('step', () => {
+    registerStepTriggerFps('On Hide event', () => {
         if (!World.isLoaded()) return;
 
         switch (true) {
@@ -25,5 +26,5 @@ export function hideOnFlag() {
             guiHidden.value = true;
             threshold = 0;
         }
-    }).setFps(20);
+    }, 20);
 }

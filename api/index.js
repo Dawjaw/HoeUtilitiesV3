@@ -2,8 +2,10 @@ import Settings from "../config";
 import { JacobFeature } from "../features/jacob";
 import { getPlayerStats } from "./stats";
 import { getBazaarData } from "./bazaar";
+import { registerStepTriggerDelay } from "../utils/utils";
 
-register("step", getApiData).setDelay(300);
+registerStepTriggerDelay("API Update", getApiData, 300);
+//register("step", getApiData).setDelay(300);
 register("gameLoad", getApiData);
 
 function getApiData() {

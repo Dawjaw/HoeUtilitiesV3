@@ -3,6 +3,7 @@
 
 import { BLOCK_BREAK_OBJECT, TOOL_DISPLAY_INFORMATION } from "../utils/constants";
 import Settings from "../config";
+import { registerStepTriggerFps } from "../utils/utils";
 
 export function calculateBlockBreaksPerSecond() {
     const KeyBindName = new KeyBind("Reset Blocks/s", Keyboard.KEY_NONE, "HoeUtilitiesV3")
@@ -14,7 +15,7 @@ export function calculateBlockBreaksPerSecond() {
         TOOL_DISPLAY_INFORMATION.showToolBlocksS = ` 0 `;
     })
 
-    register('step', () => {
+    registerStepTriggerFps('BPS Calculation', () => {
         if (BLOCK_BREAK_OBJECT.itemsBroken != 0) {
             let timeInSeconds = (Date.now() - BLOCK_BREAK_OBJECT.startTime) / 1000;
             TOOL_DISPLAY_INFORMATION.showToolBlocksS = ((BLOCK_BREAK_OBJECT.itemsBroken / timeInSeconds).toFixed(2)) ? `${(BLOCK_BREAK_OBJECT.itemsBroken / timeInSeconds).toFixed(2)}` : " 0 ";
@@ -24,7 +25,7 @@ export function calculateBlockBreaksPerSecond() {
             BLOCK_BREAK_OBJECT.startTime = 0;
             TOOL_DISPLAY_INFORMATION.showToolBlocksS = ` 0 `;
         }
-    }).setFps(20);
+    }, 20);
 
 
 }

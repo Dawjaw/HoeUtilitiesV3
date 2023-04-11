@@ -3,6 +3,7 @@
 
 import Settings from "../config";
 import guiWrapper, { PLAYER_INFORMATION, TOOL_INFORMATION, PET_INFORMATION, GARDEN_INFORMATION } from "../utils/constants";
+import { registerStepTriggerDelay, registerTickTrigger, triggerStats, printAllTriggerStatsJson } from "./utils";
 
 if (Settings.gardenCropUpgradeMap === "") {
     Settings.gardenCropUpgradeMap = "{}";
@@ -58,7 +59,7 @@ const apiKeyCheck = register('step', () => {
 
 // register debug check
 let currentDebugSetting = Settings.debugMode;
-register('tick', () => {
+registerTickTrigger('check debug var', () => {
     if (Settings.debugMode !== currentDebugSetting) {
         if (Settings.debugMode) {
             ChatLib.chat("§e[HoeUtilitesV3] Debug mode was enabled!§r");
@@ -69,6 +70,12 @@ register('tick', () => {
         }
     }
 });
+
+registerStepTriggerDelay('Print Times of Debug', () => {
+    if (Settings.debugMode) {
+        print(JSON.stringify(triggerStats, null, 2));
+    }
+}, 20);
 
 // check for api key
 register('chat', (key) => {
@@ -103,6 +110,10 @@ register("command", (arg1, arg2) => {
         ChatLib.chat(clickableMessage);
     }
 }).setName("hu3");
+
+register("command", () => {
+    FileLib.write("HoeUtilitiesV3", "debugOut.json", JSON.stringify(printAllTriggerStatsJson(triggerStats), null, 2));
+}).setName("hu3printdebug");
 
 register('command', () => {
     ChatLib.chat(`Total Farming Fortune: ${PLAYER_INFORMATION.totalFarmingFortune}`);

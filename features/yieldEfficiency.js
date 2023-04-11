@@ -2,10 +2,10 @@
 /// <reference lib="es2015" />
 
 import { BLOCK_BREAK_OBJECT, TOOL_DISPLAY_INFORMATION, PLAYER_INFORMATION, TOOL_INFORMATION, DROPS_PER_BREAK, BAZAAR_INFORMATION, CROP_NPC_PRICING, COMPACT_VALUES, PET_INFORMATION } from "../utils/constants";
-import { numberWithCommas } from "../utils/utils";
+import { numberWithCommas, registerStepTriggerFps } from "../utils/utils";
 
 export function updateYieldEfficiency() {
-    register('step', () => {
+    registerStepTriggerFps('step', () => {
         let timeInSeconds = (Date.now() - BLOCK_BREAK_OBJECT.startTime) / 1000;
         let bps = (BLOCK_BREAK_OBJECT.itemsBroken / timeInSeconds).toFixed(2);
         let extraMushrooms = 0;
@@ -30,5 +30,5 @@ export function updateYieldEfficiency() {
             TOOL_DISPLAY_INFORMATION.showToolYieldEfficiency = "Start Farming!";
             TOOL_DISPLAY_INFORMATION.showToolExpectedProfit = "Start Farming!";
         }
-    }).setFps(10);
+    }, 10);
 }

@@ -17,6 +17,7 @@ import { hideOnFlag, guiHidden } from "./features/hideOnFlag"
 import { startBerryAlert } from "./features/starwberryAlert"
 import { createOrderHUD } from "./elementaHUD/orderChangeHud"
 import { JacobFeature } from "./features/jacob"
+import { registerRenderOverlayTrigger } from "./utils/utils";
 
 // start main event triggers
 updateToolInformation();
@@ -74,7 +75,7 @@ mainHUD.addChildren(xpHUD);
 mainHUD.addChild(orderhud);
 mainHUD.removeChild(orderhud);
 
-register('renderOverlay', () => {
+registerRenderOverlayTrigger('Index render overlay', () => {
     if (guiHidden.value && Settings.neverHideJacobsHUD) {
         jacobHUD.draw();
     }

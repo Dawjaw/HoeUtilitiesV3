@@ -7,13 +7,13 @@ import {
     CROP_TO_IMAGE, currentlyHeldTool, GARDEN_INFORMATION, DEDICATION, gardenMilestones, EARTHLY, MOSSY, BUSTLNG
 } from "./constants";
 import Settings from "../config";
-import { numberWithCommas, getSkyblockID, getDaedalusAxeBonus, getItemRarity } from "./utils";
+import { numberWithCommas, getSkyblockID, getDaedalusAxeBonus, getItemRarity, registerPacketReceivedTrigger, registerTickTrigger, registerStepTriggerDelay, registerStepTriggerFps, getItemRarityNBT } from "./utils";
 
 let inGarden = false;
 let cactusKnifeIsHeld = false;
 
 export function updateToolInformation() {
-    register('step', () => {
+    registerStepTriggerFps('Main armor and item calculation', () => {
         if (!World.isLoaded()) return;
         TOOL_INFORMATION.armorBonus = 0;
         //print(JSON.stringify(getSkyblockID(Player.asPlayerMP().getItemInSlot(4))))
@@ -27,7 +27,7 @@ export function updateToolInformation() {
         [bootsItem, helmetItem, chestplateItem, leggingsItem].forEach(item => {
             if (item) {
                 const itemNBT = item.getNBT().toObject();
-                const rarity = getItemRarity(item);
+                const rarity = getItemRarityNBT(itemNBT);
                 const extraAttributes = itemNBT?.tag?.ExtraAttributes;
                 switch (extraAttributes?.modifier) {
                     case "mossy":
@@ -42,24 +42,23 @@ export function updateToolInformation() {
             }
         });
 
-
-        if (inGarden && getSkyblockID(Player.asPlayerMP()?.getItemInSlot(1)) === "RANCHERS_BOOTS") {
+        const helmet = ARMOR_BONUS[getSkyblockID(helmetItem)]?.type
+        const chestplate = ARMOR_BONUS[getSkyblockID(chestplateItem)]?.type
+        const leggings = ARMOR_BONUS[getSkyblockID(leggingsItem)]?.type
+        const boots = ARMOR_BONUS[getSkyblockID(bootsItem)]?.type
+        
+        if (inGarden && getSkyblockID(bootsItem) === "RANCHERS_BOOTS") {
             TOOL_INFORMATION.armorBonus += PLAYER_INFORMATION.farmingLevel ? Number(PLAYER_INFORMATION.farmingLevel) : 0
         } else {
-            TOOL_INFORMATION.armorBonus += ARMOR_BONUS[getSkyblockID(Player.asPlayerMP()?.getItemInSlot(1))]?.fortune || 0
+            TOOL_INFORMATION.armorBonus += ARMOR_BONUS[getSkyblockID(bootsItem)]?.fortune || 0
         }
-        if (inGarden && getSkyblockID(Player.asPlayerMP()?.getItemInSlot(4)) === "ENCHANTED_JACK_O_LANTERN" && TOOL_INFORMATION.toolType == "axe") {
+        if (inGarden && getSkyblockID(helmetItem) === "ENCHANTED_JACK_O_LANTERN" && TOOL_INFORMATION.toolType == "axe") {
             TOOL_INFORMATION.armorBonus += PLAYER_INFORMATION.farmingLevel ? Number(PLAYER_INFORMATION.farmingLevel) : 0
         } else {
-            TOOL_INFORMATION.armorBonus += ARMOR_BONUS[getSkyblockID(Player.asPlayerMP()?.getItemInSlot(4))]?.fortune || 0
+            TOOL_INFORMATION.armorBonus += ARMOR_BONUS[getSkyblockID(helmetItem)]?.fortune || 0
         }
-        TOOL_INFORMATION.armorBonus += ARMOR_BONUS[getSkyblockID(Player.asPlayerMP()?.getItemInSlot(3))]?.fortune
-        TOOL_INFORMATION.armorBonus += ARMOR_BONUS[getSkyblockID(Player.asPlayerMP()?.getItemInSlot(2))]?.fortune
-
-        const helmet = ARMOR_BONUS[getSkyblockID(Player.asPlayerMP()?.getItemInSlot(4))]?.type
-        const chestplate = ARMOR_BONUS[getSkyblockID(Player.asPlayerMP()?.getItemInSlot(3))]?.type
-        const leggings = ARMOR_BONUS[getSkyblockID(Player.asPlayerMP()?.getItemInSlot(2))]?.type
-        const boots = ARMOR_BONUS[getSkyblockID(Player.asPlayerMP()?.getItemInSlot(1))]?.type
+        TOOL_INFORMATION.armorBonus += ARMOR_BONUS[getSkyblockID(chestplateItem)]?.fortune
+        TOOL_INFORMATION.armorBonus += ARMOR_BONUS[getSkyblockID(leggingsItem)]?.fortune
 
         if (helmet === chestplate && chestplate === leggings && leggings === boots && helmet) {
             TOOL_INFORMATION.armorBonus += FULL_SET_BONUS[helmet]
@@ -106,7 +105,7 @@ export function updateToolInformation() {
         const heldItemNBT = heldItem?.getNBT()?.toObject();
         const extraAttributes = heldItemNBT?.tag?.ExtraAttributes;
         const enchantments = extraAttributes?.enchantments;
-        const rarity = getItemRarity(heldItem);
+        const rarity = getItemRarityNBT(heldItem.getNBT().toObject());
 
         currentlyHeldTool = extraAttributes?.id;
         // Check What Tool Is Held and check for other boni
@@ -124,7 +123,7 @@ export function updateToolInformation() {
             const re = new RegExp(TOOL_INFORMATION.toolCropType, 'g');
             if (extraAttributes?.id?.toLowerCase()?.match(re) && TOOL_INFORMATION.toolCropType !== "") {
                 TOOL_INFORMATION.tierBonus = TIER_BONUS[extraAttributes?.id?.split("_").pop() - 1] || 0;
-                heldItem.getLore().forEach(lore => {
+                heldItem.getLore()?.forEach(lore => {
                     const formattingRemoved = ChatLib.removeFormatting(lore);
                     const farmFortuneMatch = formattingRemoved?.match(/You have \+[0-9]+☘ Farming Fortune/);
                     if (farmFortuneMatch) {
@@ -206,9 +205,9 @@ export function updateToolInformation() {
         TOOL_DISPLAY_INFORMATION.showToolCounter = (TOOL_INFORMATION.counter) ? numberWithCommas(TOOL_INFORMATION.counter) : "Equip a Tool";
         TOOL_DISPLAY_INFORMATION.showToolCultivating = (TOOL_INFORMATION.farmedCultivating) ? numberWithCommas(TOOL_INFORMATION.farmedCultivating) : "Equip a Tool";
         TOOL_DISPLAY_INFORMATION.showToolCollection = (COLLECTIONS[TOOL_INFORMATION.toolCropType]) ? numberWithCommas(COLLECTIONS[TOOL_INFORMATION.toolCropType].toFixed(0)) : "Break a Crop";
-    }).setFps(10);
+    }), 4;
 
-    register('step', () => {
+    registerStepTriggerDelay('Is in Garden', () => {
         if (!World.isLoaded()) return;
         let found = false;
         TabList.getNames().forEach(name => {
@@ -221,12 +220,12 @@ export function updateToolInformation() {
         } else {
             inGarden = false;
         }
-    }).setDelay(1);
+    }, 1);
 }
 
 export function updatePetInformation() {
     const ArmorStand = Java.type('net.minecraft.entity.item.EntityArmorStand');
-    register('step', () => {
+    registerStepTriggerDelay('Pet level and name', () => {
         World.getAllEntitiesOfType(ArmorStand).forEach(armorStand => {
             let nametag = ChatLib.removeFormatting(armorStand.getName());
             const regex = new RegExp(`\[Lv[0-9]+\] ${Player.getName()}'s (Elephant|Mooshroom Cow)`, 'g');
@@ -236,7 +235,7 @@ export function updatePetInformation() {
                 PET_INFORMATION.level = Number(nametag.match(/Lv[0-9]+/)[0].replace("Lv", ""));
             }
         });
-    }).setDelay(1);
+    }, 1);
 
     register('chat', (key) => {
         key = ChatLib.removeFormatting(key);
@@ -253,7 +252,7 @@ export function updatePetInformation() {
         }
     }).setCriteria("You despawned your ${key}");
 
-    register('step', () => {
+    registerStepTriggerFps('Pet Information Update with API data', () => {
         if (PET_INFORMATION.name === "Elephant") {
             PET_INFORMATION.fortune = PET_INFORMATION.level * 1.8;
         } else if (PET_INFORMATION.name === "Mooshroom Cow") {
@@ -271,15 +270,15 @@ export function updatePetInformation() {
         } else {
             PET_INFORMATION.fortune = 0;
         }
-    }).setFps(3);
+    }, 3);
 }
 
 export function updatePlayerInformation() {
-    register('step', () => {
+    registerStepTriggerDelay('strenght info trigger', () => {
         if (inGarden && PLAYER_INFORMATION.strength === 0 && PET_INFORMATION.name === "Mooshroom Cow") {
             ChatLib.chat("&2Please open the SkyBlock Menu to update your strength stat§r");
         }
-    }).setDelay(120);
+    }, 120);
 
     register('command', (number) => {
         let parsed = parseInt(number);
@@ -291,9 +290,12 @@ export function updatePlayerInformation() {
         Settings.save();
     }).setName("setgardenupgrade");
 
-    register('step', () => {
+    registerStepTriggerFps('GUI Handling Information GUI', () => {
+        if (!World.isLoaded()) return;
+        const TabListNames = TabList?.getNames();
+        const PlayerContainer = Player?.getContainer();
         if (World.isLoaded()) {
-            TabList?.getNames()?.forEach(name => {
+            TabListNames?.forEach(name => {
                 let rowString = ChatLib.removeFormatting(name);
                 if (rowString.includes("Strength")) {
                     let re = /(\d+)/;
@@ -304,7 +306,7 @@ export function updatePlayerInformation() {
                 }
             });
         } else if (World.isLoaded() && inGarden) {
-            TabList?.getNames()?.forEach(name => {
+            TabListNames?.forEach(name => {
                 let rowString = ChatLib.removeFormatting(name);
                 if (rowString.match(/Skills: Farming [0-9]+/)) {
                     PLAYER_INFORMATION.farmingLevel = rowString.match(/Skills: Farming [0-9]+/)[0].split(" ")[2];
@@ -312,8 +314,8 @@ export function updatePlayerInformation() {
             });
         }
 
-        if (Player.getContainer()?.getName() === "SkyBlock Menu") {
-            const str = Player.getContainer()?.getStackInSlot(13)?.getLore()?.find(lore => {
+        if (PlayerContainer?.getName() === "SkyBlock Menu") {
+            const str = PlayerContainer?.getStackInSlot(13)?.getLore()?.find(lore => {
                 return ChatLib.removeFormatting(lore)?.replace(",", "").match(/Strength ([0-9]+)/) ? ChatLib.removeFormatting(lore)?.replace(",", "").match(/Strength ([0-9]+)/)[0] : 0;
             });
             if (ChatLib.removeFormatting(str)?.replace(",", "")?.match(/Strength ([0-9]+)/)) {
@@ -321,9 +323,10 @@ export function updatePlayerInformation() {
             }
         }
 
-        if (Player.getContainer()?.getName() === "Desk") {
-            if (Player.getContainer()?.getStackInSlot(4)?.getLore()?.length > 1) {
-                const romanVariant = ChatLib.removeFormatting(Player.getContainer()?.getStackInSlot(4)?.getLore()[0].split(" ")[2]);
+        if (PlayerContainer?.getName() === "Desk") {
+            const GardenLevel = PlayerContainer?.getStackInSlot(4)?.getLore();
+            if (GardenLevel?.length > 1) {
+                const romanVariant = ChatLib.removeFormatting(GardenLevel[0].split(" ")[2]);
                 if (isNaN(romanVariant)) {
                     GARDEN_INFORMATION.gardenLevel = Number(ROMAN_TO_ARABIC[romanVariant]);
                 }
@@ -335,11 +338,12 @@ export function updatePlayerInformation() {
             }
         }
 
-        if (Player.getContainer()?.getName() === "Configure Plots") {
+        if (PlayerContainer?.getName() === "Configure Plots") {
             let unlockedPlots = 24;
-            Player.getContainer()?.getItems()?.slice(0, 53)?.forEach(item => {
-                if (item?.getLore()?.join()?.includes("Plot")) {
-                    if (item?.getLore()[1].includes("Requirement")) {
+            PlayerContainer?.getItems()?.slice(0, 53)?.forEach(item => {
+                const ItemLore = item?.getLore();
+                if (ItemLore?.join()?.includes("Plot")) {
+                    if (ItemLore[1].includes("Requirement")) {
                         unlockedPlots--;
                     }
                 }
@@ -349,24 +353,25 @@ export function updatePlayerInformation() {
             Settings.save();
         }
 
-        if (Player.getContainer()?.getName() === "Crop Milestones") {
-            Player.getContainer()?.getItems().slice(0, 27).forEach(item => {
-                if (item?.getLore()?.length > 5) {
-                    if (item?.getLore()[0].split(" ").length > 2) {
-                        let cropName = CROP_TO_IMAGE[ChatLib.removeFormatting(item?.getLore()[0].split(" ").splice(0, 2).join(" "))];
-                        let level = ChatLib.removeFormatting(item?.getLore()[0].split(" ")[2]);
+        if (PlayerContainer?.getName() === "Crop Milestones") {
+            PlayerContainer?.getItems()?.slice(0, 27)?.forEach(item => {
+                const ItemLore = item?.getLore();
+                if (ItemLore?.length > 5) {
+                    if (ItemLore[0].split(" ").length > 2) {
+                        let cropName = CROP_TO_IMAGE[ChatLib.removeFormatting(ItemLore[0].split(" ").splice(0, 2).join(" "))];
+                        let level = ChatLib.removeFormatting(ItemLore[0].split(" ")[2]);
                         if (isNaN(level)) {
-                            gardenMilestones[cropName] = ROMAN_TO_ARABIC[ChatLib.removeFormatting(item?.getLore()[0].split(" ")[2])];
+                            gardenMilestones[cropName] = ROMAN_TO_ARABIC[ChatLib.removeFormatting(ItemLore[0].split(" ")[2])];
                         } else {
-                            gardenMilestones[cropName] = ChatLib.removeFormatting(item?.getLore()[0].split(" ")[2]);
+                            gardenMilestones[cropName] = ChatLib.removeFormatting(ItemLore[0].split(" ")[2]);
                         }
                     } else {
-                        let cropName = CROP_TO_IMAGE[ChatLib.removeFormatting(item?.getLore()[0].split(" ")[0])];
-                        let level = ChatLib.removeFormatting(item?.getLore()[0].split(" ")[1]);
+                        let cropName = CROP_TO_IMAGE[ChatLib.removeFormatting(ItemLore[0].split(" ")[0])];
+                        let level = ChatLib.removeFormatting(ItemLore[0].split(" ")[1]);
                         if (isNaN(level)) {
-                            gardenMilestones[cropName] = ROMAN_TO_ARABIC[ChatLib.removeFormatting(item?.getLore()[0].split(" ")[1])];
+                            gardenMilestones[cropName] = ROMAN_TO_ARABIC[ChatLib.removeFormatting(ItemLore[0].split(" ")[1])];
                         } else {
-                            gardenMilestones[cropName] = ChatLib.removeFormatting(item?.getLore()[0].split(" ")[1]);
+                            gardenMilestones[cropName] = ChatLib.removeFormatting(ItemLore[0].split(" ")[1]);
                         }
                     }
                 }
@@ -375,9 +380,9 @@ export function updatePlayerInformation() {
             Settings.save();
         }
 
-        if (Player.getContainer()?.getName() === "Visitor Milestones") {
+        if (PlayerContainer?.getName() === "Visitor Milestones") {
             const uniqueVisitorMilestones = [0, 1, 5, 10, 20, 30, 40, 50, 60, 70, 80]
-            const lore = Player.getContainer()?.getStackInSlot(21)?.getLore();
+            const lore = PlayerContainer?.getStackInSlot(21)?.getLore();
             if (isNaN(ChatLib.removeFormatting(lore[6]).split(" ")[3].replace(":", ""))) {
                 PLAYER_INFORMATION.uniqueVisitors = uniqueVisitorMilestones[ROMAN_TO_ARABIC[ChatLib.removeFormatting(lore[6]).split(" ")[3].replace(":", "")]-1] + Number(ChatLib.removeFormatting(lore[7]).split("/")[0].slice(-1));
             } else {
@@ -387,12 +392,12 @@ export function updatePlayerInformation() {
             Settings.save();
         }
 
-        if (Player.getContainer()?.getName() === "Community Shop") {
-            if (Player.getContainer()?.getStackInSlot(44)?.getName()?.includes("Garden Farming Fortune")) {
-                if (isNaN(ChatLib.removeFormatting(Player.getContainer()?.getStackInSlot(44)?.getName()).split(" ").pop())) {
-                    Settings.gardenCommunityUpgrade = Number(ROMAN_TO_ARABIC[ChatLib.removeFormatting(Player.getContainer()?.getStackInSlot(44)?.getName()).split(" ").pop()]);
+        if (PlayerContainer?.getName() === "Community Shop") {
+            if (PlayerContainer?.getStackInSlot(44)?.getName()?.includes("Garden Farming Fortune")) {
+                if (isNaN(ChatLib.removeFormatting(PlayerContainer?.getStackInSlot(44)?.getName()).split(" ").pop())) {
+                    Settings.gardenCommunityUpgrade = Number(ROMAN_TO_ARABIC[ChatLib.removeFormatting(PlayerContainer?.getStackInSlot(44)?.getName()).split(" ").pop()]);
                 } else {
-                    Settings.gardenCommunityUpgrade = Number(ChatLib.removeFormatting(Player.getContainer()?.getStackInSlot(44)?.getName()).split(" ").pop());
+                    Settings.gardenCommunityUpgrade = Number(ChatLib.removeFormatting(PlayerContainer?.getStackInSlot(44)?.getName()).split(" ").pop());
                 }
                 Settings.save();
             }
@@ -400,9 +405,9 @@ export function updatePlayerInformation() {
 
         const NAMES_CROPS = ["Carrot", "Melon", "Wheat", "Nether Wart", "Pumpkin", "Sugar Cane", "Cactus", "Potato", "Mushroom", "Cocoa Beans"]
 
-        if (Player.getContainer()?.getName() === "Crop Upgrades") {
+        if (PlayerContainer?.getName() === "Crop Upgrades") {
             let myMappingObject = {};
-            Player.getContainer()?.getItems()?.slice(0, 44)?.forEach(item => {
+            PlayerContainer?.getItems()?.slice(0, 44)?.forEach(item => {
                 if (NAMES_CROPS.includes(ChatLib.removeFormatting(item?.getName()))) {
                     const cropName = ChatLib.removeFormatting(item?.getName());
                     const CropValue = ChatLib.removeFormatting(item?.getLore().find(lore => lore.includes("Current Tier"))).split(" ").pop().split("/")[0] * 5;
@@ -436,8 +441,8 @@ export function updatePlayerInformation() {
         PLAYER_INFORMATION.totalFarmingFortune += TOOL_INFORMATION.greenThumb ? Number(TOOL_INFORMATION.greenThumb.toFixed(2)) : 0;
         PLAYER_INFORMATION.totalFarmingFortune += TOOL_INFORMATION.talismanBonus ? TOOL_INFORMATION.talismanBonus : 0;
 
-        TOOL_DISPLAY_INFORMATION.showToolFarmingFortune = PLAYER_INFORMATION.totalFarmingFortune;
-    }).setFps(5);
+        TOOL_DISPLAY_INFORMATION.showToolFarmingFortune = PLAYER_INFORMATION.totalFarmingFortune?.toFixed(2);
+    }, 5);
 
     register("actionBar", (message, e) => {
         //ChatLib.chat(message);
@@ -495,7 +500,7 @@ export function updatePlayerInformation() {
     let last20BlocksSeen = [];
 
     const S29PacketSoundEffect = Java.type("net.minecraft.network.play.server.S29PacketSoundEffect")
-    register('packetReceived', (packet, event) => {
+    registerPacketReceivedTrigger('sound packet', (packet) => {
         if (!cactusKnifeIsHeld) return;
         if (!last20BlocksSeen.some(block => block === "cactus")) return;
         if (packet instanceof S29PacketSoundEffect) {
@@ -508,7 +513,7 @@ export function updatePlayerInformation() {
         }
     });
 
-    register('tick', () => {
+    registerTickTrigger('get block name ahead', () => {
         if (Player.lookingAt() instanceof Block) {
             if (last20BlocksSeen.length >= 20) last20BlocksSeen.shift();
             last20BlocksSeen.push(Player.lookingAt()?.type?.getRegistryName()?.split(":")[1]);
