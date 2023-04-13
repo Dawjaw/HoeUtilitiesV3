@@ -87,7 +87,7 @@ export function getPlayerStats() {
                             break;
                         case "GREEN_BANDANA":
                             PET_INFORMATION.minosRelic = false;
-                            PET_INFORMATION.itemBonus = GARDEN_INFORMATION.gardenLevel * 4;
+                            PET_INFORMATION.itemBonus = (Settings?.gardenLevel || 0) * 4;
                             break;
                         default:
                             PET_INFORMATION.itemBonus = 0;
@@ -96,6 +96,7 @@ export function getPlayerStats() {
                     }
                 }
             })
+            
             if ("collection" in profile_in_use) {
                 COLLECTIONS.cane = (profile_in_use.collection.SUGAR_CANE) ? profile_in_use.collection.SUGAR_CANE : 0;
                 COLLECTIONS.potato = (profile_in_use.collection.POTATO_ITEM) ? profile_in_use.collection.POTATO_ITEM : 0;
@@ -129,7 +130,7 @@ export function getPlayerStats() {
                         ChatLib.removeFormatting(loreText).match(pattern2) ? TOOL_INFORMATION.equipmentBonus += parseInt(ChatLib.removeFormatting(loreText).match(pattern2)[0], 10) : 0;
                         TOOL_INFORMATION.equipmentBonus += 5;
                         if ("enchantments" in newCompound?.tag?.ExtraAttributes) {
-                            TOOL_INFORMATION.greenThumb += GREEN_THUMB_ENCHANT[newCompound?.tag?.ExtraAttributes?.enchantments?.green_thumb] * PLAYER_INFORMATION.uniqueVisitors || 0;
+                            TOOL_INFORMATION.greenThumb += GREEN_THUMB_ENCHANT[newCompound?.tag?.ExtraAttributes?.enchantments?.green_thumb] * (Settings?.uniqueVisitors || 0) || 0;
                         }
                         const rarity = getItemRarityNBT(newCompound);
                         switch (newCompound?.tag?.ExtraAttributes?.modifier) {

@@ -59,7 +59,7 @@ export function updateToolInformation() {
         TOOL_DISPLAY_INFORMATION.showToolCounter = TOOL_INFORMATION.counter ? numberWithCommas(TOOL_INFORMATION.counter) : "Equip a Tool";
         TOOL_DISPLAY_INFORMATION.showToolCultivating = TOOL_INFORMATION.farmedCultivating ? numberWithCommas(TOOL_INFORMATION.farmedCultivating) : "Equip a Tool";
         TOOL_DISPLAY_INFORMATION.showToolCollection = COLLECTIONS[TOOL_INFORMATION.toolCropType] ? numberWithCommas(COLLECTIONS[TOOL_INFORMATION.toolCropType].toFixed(0)) : "Break a Crop";
-    }), 4;
+    }), 2;
 
     function updateArmorPieceBonuses(armorTypes) {
         const armorPieceCount = armorTypes.reduce((acc, type) => {
@@ -86,6 +86,9 @@ export function updateToolInformation() {
     }
 
     function updateGardenBonuses(inGarden, bootsItem, helmetItem, armorTypes, slots) {
+        armorTypes.forEach((type, index) => {
+            TOOL_INFORMATION.armorBonus += ARMOR_BONUS[getSkyblockID(slots[index])]?.fortune || 0;
+        });
         if (inGarden) {
             const gardenBonuses = {
                 RANCHERS_BOOTS: bootsItem,
@@ -98,10 +101,6 @@ export function updateToolInformation() {
                 } else {
                     TOOL_INFORMATION.armorBonus += ARMOR_BONUS[getSkyblockID(value)]?.fortune || 0;
                 }
-            });
-        } else {
-            armorTypes.forEach((type, index) => {
-                TOOL_INFORMATION.armorBonus += ARMOR_BONUS[getSkyblockID(slots[index])]?.fortune || 0;
             });
         }
     }
@@ -328,7 +327,7 @@ export function updatePlayerInformation() {
             Settings.gardenCommunityUpgrade * 4,
             PLAYER_INFORMATION.gardenCropBonus,
             PET_INFORMATION.itemBonus,
-            GARDEN_INFORMATION.amountofUnlockedPlots * 3,
+            (Settings?.unlockedPlots || 0) * 3,
             TOOL_INFORMATION.dedication,
             Number(TOOL_INFORMATION.greenThumb.toFixed(2)),
             TOOL_INFORMATION.talismanBonus,
