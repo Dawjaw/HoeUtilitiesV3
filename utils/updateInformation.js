@@ -3,7 +3,7 @@
 
 import {
     TOOL_INFORMATION, TIER_BONUS, RARITIES, PET_INFORMATION, PLAYER_INFORMATION, EXP_REQUIRED_PER_LEVEL, BLOCKS_TO_COLLECTION_TYPE, ARMOR_PIECE_BONUS, FULL_SET_BONUS,
-    MAX_AGE_OF_BLOCKS, TOOL_TO_TURBO_ENCHANT, BLOCK_BREAK_OBJECT, TOOL_DISPLAY_INFORMATION, COLLECTIONS, DROPS_PER_BREAK, BOUNTIFUL, ARMOR_BONUS, BASIC_ITEM_RATES, ROMAN_TO_ARABIC, 
+    MAX_AGE_OF_BLOCKS, TOOL_TO_TURBO_ENCHANT, BLOCK_BREAK_OBJECT, TOOL_DISPLAY_INFORMATION, COLLECTIONS, DROPS_PER_BREAK, BOUNTIFUL, ARMOR_BONUS, BASIC_ITEM_RATES, ROMAN_TO_ARABIC,
     CROP_TO_IMAGE, currentlyHeldTool, GARDEN_INFORMATION, DEDICATION, gardenMilestones, EARTHLY, MOSSY, BUSTLNG
 } from "./constants";
 import Settings from "../config";
@@ -16,89 +16,27 @@ export function updateToolInformation() {
     registerStepTriggerFps('Main armor and item calculation', () => {
         if (!World.isLoaded()) return;
         TOOL_INFORMATION.armorBonus = 0;
-        //print(JSON.stringify(getSkyblockID(Player.asPlayerMP().getItemInSlot(4))))
-        //print(inGarden)
 
-        const bootsItem = Player.asPlayerMP()?.getItemInSlot(1);
-        const helmetItem = Player.asPlayerMP()?.getItemInSlot(4);
-        const chestplateItem = Player.asPlayerMP()?.getItemInSlot(3);
-        const leggingsItem = Player.asPlayerMP()?.getItemInSlot(2);
+        const playerMP = Player.asPlayerMP();
+        if (!playerMP) return;
 
-        [bootsItem, helmetItem, chestplateItem, leggingsItem].forEach(item => {
-            if (item) {
-                const itemNBT = item.getNBT().toObject();
-                const rarity = getItemRarityNBT(itemNBT);
-                const extraAttributes = itemNBT?.tag?.ExtraAttributes;
-                switch (extraAttributes?.modifier) {
-                    case "mossy":
-                        TOOL_INFORMATION.armorBonus += MOSSY[rarity];
-                        break;
-                    case "bustling":
-                        TOOL_INFORMATION.armorBonus += BUSTLNG[rarity];
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
+        const slots = [1, 4, 3, 2].map(slot => playerMP.getItemInSlot(slot));
+        const [bootsItem, helmetItem, chestplateItem, leggingsItem] = slots;
 
-        const helmet = ARMOR_BONUS[getSkyblockID(helmetItem)]?.type
-        const chestplate = ARMOR_BONUS[getSkyblockID(chestplateItem)]?.type
-        const leggings = ARMOR_BONUS[getSkyblockID(leggingsItem)]?.type
-        const boots = ARMOR_BONUS[getSkyblockID(bootsItem)]?.type
-        
-        if (inGarden && getSkyblockID(bootsItem) === "RANCHERS_BOOTS") {
-            TOOL_INFORMATION.armorBonus += PLAYER_INFORMATION.farmingLevel ? Number(PLAYER_INFORMATION.farmingLevel) : 0
-        } else {
-            TOOL_INFORMATION.armorBonus += ARMOR_BONUS[getSkyblockID(bootsItem)]?.fortune || 0
-        }
-        if (inGarden && getSkyblockID(helmetItem) === "ENCHANTED_JACK_O_LANTERN" && TOOL_INFORMATION.toolType == "axe") {
-            TOOL_INFORMATION.armorBonus += PLAYER_INFORMATION.farmingLevel ? Number(PLAYER_INFORMATION.farmingLevel) : 0
-        } else {
-            TOOL_INFORMATION.armorBonus += ARMOR_BONUS[getSkyblockID(helmetItem)]?.fortune || 0
-        }
-        TOOL_INFORMATION.armorBonus += ARMOR_BONUS[getSkyblockID(chestplateItem)]?.fortune
-        TOOL_INFORMATION.armorBonus += ARMOR_BONUS[getSkyblockID(leggingsItem)]?.fortune
+        slots.forEach(item => updateArmorBonus(item));
+
+        const armorTypes = slots.map(item => ARMOR_BONUS[getSkyblockID(item)]?.type);
+        const [boots, helmet, chestplate, leggings] = armorTypes;
+
+        updateGardenBonuses(inGarden, bootsItem, helmetItem, armorTypes, slots);
 
         if (helmet === chestplate && chestplate === leggings && leggings === boots && helmet) {
-            TOOL_INFORMATION.armorBonus += FULL_SET_BONUS[helmet]
+            TOOL_INFORMATION.armorBonus += FULL_SET_BONUS[helmet];
         }
 
-        // count how many of each armor piece is worn
-        const armorPieces = [helmet, chestplate, leggings, boots]
-        const armorPieceCount = {}
-        armorPieces.forEach(piece => {
-            if (piece) {
-                if (armorPieceCount[piece]) {
-                    armorPieceCount[piece]++
-                } else {
-                    armorPieceCount[piece] = 1
-                }
-            }
-        })
+        updateArmorPieceBonuses(armorTypes);
 
-        // add the bonus for each armor piece
-        Object.keys(armorPieceCount).forEach(piece => {
-            TOOL_INFORMATION.armorBonus += ARMOR_PIECE_BONUS[piece][armorPieceCount[piece] - 1]
-        })
-
-        //////////////////////////////////////////////////////////////////////////////////
-        /////////////////////////////// UPDATE TOOL INFORMATION //////////////////////////
-        //////////////////////////////////////////////////////////////////////////////////
-        TOOL_INFORMATION.tierBonus = 0;
-        cactusKnifeIsHeld = false;
-        TOOL_INFORMATION.isToolHeld = false;
-        TOOL_INFORMATION.cultivating = 0;
-        TOOL_INFORMATION.harvesting = 0;
-        TOOL_INFORMATION.itemRate = 0;
-        TOOL_INFORMATION.turbo = 0;
-        TOOL_INFORMATION.rarity = 0;
-        TOOL_INFORMATION.counter = 0;
-        TOOL_INFORMATION.sunder = 0;
-        TOOL_INFORMATION.farmedCultivating = 0;
-        TOOL_INFORMATION.farmingForDummies = 0;
-        TOOL_INFORMATION.bountiful = false;
-        TOOL_INFORMATION.toolType = "";
+        resetToolInformation();
 
         const heldItem = Player.getHeldItem();
         if (!heldItem) return;
@@ -108,15 +46,96 @@ export function updateToolInformation() {
         const rarity = getItemRarityNBT(heldItem.getNBT().toObject());
 
         currentlyHeldTool = extraAttributes?.id;
-        // Check What Tool Is Held and check for other boni
-        /////////////// DAEDALUS AXE ///////////////
-        if (extraAttributes?.id === "DAEDALUS_AXE") {
-            TOOL_INFORMATION.toolType = "axe";
-            TOOL_INFORMATION.isToolHeld = true;
-            TOOL_INFORMATION.itemRate = getDaedalusAxeBonus(heldItem.getNBT().toObject());
-        }
 
-        /////////////// Math Hoe ///////////////////
+        handleDaedalusAxe(extraAttributes, heldItem);
+        handleMathHoe(extraAttributes, heldItem);
+        handleBasicTools(extraAttributes);
+        handleSpecialTools(extraAttributes);
+        handleUniversalBonuses(extraAttributes, enchantments, rarity);
+
+        gardenMilestones = JSON.parse(Settings.gardenCropMilestoneMap);
+        updatePlayerGardenInformation(inGarden);
+
+        TOOL_DISPLAY_INFORMATION.showToolCounter = TOOL_INFORMATION.counter ? numberWithCommas(TOOL_INFORMATION.counter) : "Equip a Tool";
+        TOOL_DISPLAY_INFORMATION.showToolCultivating = TOOL_INFORMATION.farmedCultivating ? numberWithCommas(TOOL_INFORMATION.farmedCultivating) : "Equip a Tool";
+        TOOL_DISPLAY_INFORMATION.showToolCollection = COLLECTIONS[TOOL_INFORMATION.toolCropType] ? numberWithCommas(COLLECTIONS[TOOL_INFORMATION.toolCropType].toFixed(0)) : "Break a Crop";
+    }), 4;
+
+    function updateArmorPieceBonuses(armorTypes) {
+        const armorPieceCount = armorTypes.reduce((acc, type) => {
+            if (type) acc[type] = (acc[type] || 0) + 1;
+            return acc;
+        }, {});
+    
+        Object.entries(armorPieceCount).forEach(([piece, count]) => {
+            TOOL_INFORMATION.armorBonus += ARMOR_PIECE_BONUS[piece][count - 1];
+        });
+    }
+
+    function updateArmorBonus(item) {
+        if (item) {
+            const itemNBT = item.getNBT().toObject();
+            const rarity = getItemRarityNBT(itemNBT);
+            const extraAttributes = itemNBT?.tag?.ExtraAttributes;
+
+            if (extraAttributes?.modifier) {
+                const bonus = extraAttributes.modifier === 'mossy' ? MOSSY[rarity] : BUSTLNG[rarity];
+                TOOL_INFORMATION.armorBonus += bonus || 0;
+            }
+        }
+    }
+
+    function updateGardenBonuses(inGarden, bootsItem, helmetItem, armorTypes, slots) {
+        if (inGarden) {
+            const gardenBonuses = {
+                RANCHERS_BOOTS: bootsItem,
+                ENCHANTED_JACK_O_LANTERN: helmetItem && TOOL_INFORMATION.toolType === 'axe',
+            };
+
+            Object.entries(gardenBonuses).forEach(([key, value]) => {
+                if (getSkyblockID(value) === key) {
+                    TOOL_INFORMATION.armorBonus += PLAYER_INFORMATION.farmingLevel ? Number(PLAYER_INFORMATION.farmingLevel) : 0;
+                } else {
+                    TOOL_INFORMATION.armorBonus += ARMOR_BONUS[getSkyblockID(value)]?.fortune || 0;
+                }
+            });
+        } else {
+            armorTypes.forEach((type, index) => {
+                TOOL_INFORMATION.armorBonus += ARMOR_BONUS[getSkyblockID(slots[index])]?.fortune || 0;
+            });
+        }
+    }
+
+    function resetToolInformation() {
+        Object.assign(TOOL_INFORMATION, {
+            tierBonus: 0,
+            cactusKnifeIsHeld: false,
+            isToolHeld: false,
+            cultivating: 0,
+            harvesting: 0,
+            itemRate: 0,
+            turbo: 0,
+            rarity: 0,
+            counter: 0,
+            sunder: 0,
+            farmedCultivating: 0,
+            farmingForDummies: 0,
+            bountiful: false,
+            toolType: "",
+        });
+    }
+
+    function handleDaedalusAxe(extraAttributes, heldItem) {
+        if (extraAttributes?.id === "DAEDALUS_AXE") {
+            Object.assign(TOOL_INFORMATION, {
+                toolType: "axe",
+                isToolHeld: true,
+                itemRate: getDaedalusAxeBonus(heldItem.getNBT().toObject()),
+            });
+        }
+    }
+
+    function handleMathHoe(extraAttributes, heldItem) {
         if (extraAttributes?.id?.match(/HOE_(CANE|POTATO|CARROT|WHEAT|WARTS)/)) {
             TOOL_INFORMATION.isToolHeld = true;
             TOOL_INFORMATION.counter = extraAttributes?.mined_crops || 0;
@@ -133,30 +152,30 @@ export function updateToolInformation() {
                 });
             }
         }
+    }
 
-        /////////////// Basic Tools ///////////////////
+    function handleBasicTools(extraAttributes) {
         if (Object.keys(BASIC_ITEM_RATES).includes(extraAttributes?.id)) {
             TOOL_INFORMATION.isToolHeld = true;
-            TOOL_INFORMATION.itemRate = BASIC_ITEM_RATES[extraAttributes?.id]
+            TOOL_INFORMATION.itemRate = BASIC_ITEM_RATES[extraAttributes?.id];
             if (extraAttributes?.id.includes("AXE")) {
                 TOOL_INFORMATION.toolType = "axe";
             }
         }
+    }
 
-        /////////////// COCO CHOPPER //////////////////
+    function handleSpecialTools(extraAttributes) {
         if (extraAttributes?.id === "COCO_CHOPPER") {
             TOOL_INFORMATION.isToolHeld = true;
             TOOL_INFORMATION.itemRate = 20;
             TOOL_INFORMATION.toolType = "axe";
         }
 
-        /////////////// FUNGI CUTTER //////////////////
         if (extraAttributes?.id === "FUNGI_CUTTER") {
             TOOL_INFORMATION.isToolHeld = true;
             TOOL_INFORMATION.itemRate = 30;
         }
 
-        /////////////// CACTUS KNIFE //////////////////
         if (extraAttributes?.id === "CACTUS_KNIFE") {
             TOOL_INFORMATION.isToolHeld = true;
             cactusKnifeIsHeld = true;
@@ -166,8 +185,9 @@ export function updateToolInformation() {
             TOOL_INFORMATION.isToolHeld = true;
             TOOL_INFORMATION.toolType = "axe";
         }
+    }
 
-        /////////////// Universal Boni ////////////////
+    function handleUniversalBonuses(extraAttributes, enchantments, rarity) {
         TOOL_INFORMATION.turbo = enchantments?.[`${TOOL_TO_TURBO_ENCHANT[TOOL_INFORMATION.toolCropType]}`] * 5 || 0;
         TOOL_INFORMATION.dedication = enchantments?.dedication ? DEDICATION[enchantments?.dedication] * gardenMilestones?.[TOOL_INFORMATION.toolCropType] : 0;
         TOOL_INFORMATION.farmingForDummies = extraAttributes?.farming_for_dummies_count || 0;
@@ -175,6 +195,7 @@ export function updateToolInformation() {
         TOOL_INFORMATION.harvesting = enchantments?.harvesting * 12.5 || 0;
         TOOL_INFORMATION.sunder = enchantments?.sunder * 12.5;
         TOOL_INFORMATION.farmedCultivating = extraAttributes?.farmed_cultivating || "No Cultivating";
+
         switch (extraAttributes?.modifier) {
             case "bountiful":
                 TOOL_INFORMATION.bountiful = true;
@@ -184,14 +205,21 @@ export function updateToolInformation() {
                 TOOL_INFORMATION.bountiful = false;
                 TOOL_INFORMATION.rarity = RARITIES[rarity];
                 break;
+            case "blessed":
+                TOOL_INFORMATION.bountiful = false;
+                TOOL_INFORMATION.rarity = RARITIES[rarity];
+                break;
             case "earthly":
                 TOOL_INFORMATION.bountiful = false;
                 TOOL_INFORMATION.rarity = EARTHLY[rarity];
+                break;
             default:
                 TOOL_INFORMATION.bountiful = false;
                 break;
         }
-        gardenMilestones = JSON.parse(Settings.gardenCropMilestoneMap);
+    }
+
+    function updatePlayerGardenInformation(inGarden) {
         if (inGarden) {
             PLAYER_INFORMATION.gardenCropBonus = JSON.parse(Settings.gardenCropUpgradeMap)[TOOL_INFORMATION.toolCropType] || 0;
             PLAYER_INFORMATION.gardenCommunityUpgrade = Settings.gardenCommunityUpgrade * 4 || 0;
@@ -199,27 +227,25 @@ export function updateToolInformation() {
             PLAYER_INFORMATION.gardenCropBonus = 0;
             PLAYER_INFORMATION.gardenCommunityUpgrade = 0;
         }
+
         GARDEN_INFORMATION.gardenLevel = Settings.gardenLevel;
         GARDEN_INFORMATION.amountofUnlockedPlots = Settings.unlockedPlots;
         PLAYER_INFORMATION.uniqueVisitors = Settings.uniqueVisitors;
-        TOOL_DISPLAY_INFORMATION.showToolCounter = (TOOL_INFORMATION.counter) ? numberWithCommas(TOOL_INFORMATION.counter) : "Equip a Tool";
-        TOOL_DISPLAY_INFORMATION.showToolCultivating = (TOOL_INFORMATION.farmedCultivating) ? numberWithCommas(TOOL_INFORMATION.farmedCultivating) : "Equip a Tool";
-        TOOL_DISPLAY_INFORMATION.showToolCollection = (COLLECTIONS[TOOL_INFORMATION.toolCropType]) ? numberWithCommas(COLLECTIONS[TOOL_INFORMATION.toolCropType].toFixed(0)) : "Break a Crop";
-    }), 4;
+    }
+
+    function updatePlayerGardenInformation(inGarden) {
+        if (inGarden) {
+            PLAYER_INFORMATION.gardenCropBonus = JSON.parse(Settings.gardenCropUpgradeMap)[TOOL_INFORMATION.toolCropType] || 0;
+            PLAYER_INFORMATION.gardenCommunityUpgrade = Settings.gardenCommunityUpgrade * 4 || 0;
+        } else {
+            PLAYER_INFORMATION.gardenCropBonus = 0;
+            PLAYER_INFORMATION.gardenCommunityUpgrade = 0;
+        }
+    }
 
     registerStepTriggerDelay('Is in Garden', () => {
         if (!World.isLoaded()) return;
-        let found = false;
-        TabList.getNames().forEach(name => {
-            if (ChatLib.removeFormatting(name).replace(/[^\w]/g, "").includes("AreaGarden")) {
-                found = true;
-            }
-        });
-        if (found) {
-            inGarden = true
-        } else {
-            inGarden = false;
-        }
+        inGarden = TabList.getNames().some(name => ChatLib.removeFormatting(name).replace(/[^\w]/g, "").includes("AreaGarden"));
     }, 1);
 }
 
@@ -273,12 +299,47 @@ export function updatePetInformation() {
     }, 3);
 }
 
+
 export function updatePlayerInformation() {
     registerStepTriggerDelay('strenght info trigger', () => {
         if (inGarden && PLAYER_INFORMATION.strength === 0 && PET_INFORMATION.name === "Mooshroom Cow") {
             ChatLib.chat("&2Please open the SkyBlock Menu to update your strength stat§r");
         }
     }, 120);
+
+    function calculateTotalFarmingFortune() {
+        let totalFarmingFortune = 100;
+    
+        const bonuses = [
+            PET_INFORMATION.fortune,
+            TOOL_INFORMATION.cultivating,
+            TOOL_INFORMATION.harvesting,
+            TOOL_INFORMATION.sunder,
+            TOOL_INFORMATION.itemRate,
+            TOOL_INFORMATION.farmingForDummies,
+            PLAYER_INFORMATION.farmingLevel * 4,
+            TOOL_INFORMATION.tierBonus,
+            TOOL_INFORMATION.turbo,
+            TOOL_INFORMATION.rarity,
+            PLAYER_INFORMATION.anita,
+            PLAYER_INFORMATION.cake,
+            TOOL_INFORMATION.armorBonus,
+            TOOL_INFORMATION.equipmentBonus,
+            Settings.gardenCommunityUpgrade * 4,
+            PLAYER_INFORMATION.gardenCropBonus,
+            PET_INFORMATION.itemBonus,
+            GARDEN_INFORMATION.amountofUnlockedPlots * 3,
+            TOOL_INFORMATION.dedication,
+            Number(TOOL_INFORMATION.greenThumb.toFixed(2)),
+            TOOL_INFORMATION.talismanBonus,
+        ];
+    
+        bonuses.forEach((bonus) => {
+            totalFarmingFortune += bonus || 0;
+        });
+    
+        return totalFarmingFortune;
+    }
 
     register('command', (number) => {
         let parsed = parseInt(number);
@@ -384,9 +445,9 @@ export function updatePlayerInformation() {
             const uniqueVisitorMilestones = [0, 1, 5, 10, 20, 30, 40, 50, 60, 70, 80]
             const lore = PlayerContainer?.getStackInSlot(21)?.getLore();
             if (isNaN(ChatLib.removeFormatting(lore[6]).split(" ")[3].replace(":", ""))) {
-                PLAYER_INFORMATION.uniqueVisitors = uniqueVisitorMilestones[ROMAN_TO_ARABIC[ChatLib.removeFormatting(lore[6]).split(" ")[3].replace(":", "")]-1] + Number(ChatLib.removeFormatting(lore[7]).split("/")[0].slice(-1));
+                PLAYER_INFORMATION.uniqueVisitors = uniqueVisitorMilestones[ROMAN_TO_ARABIC[ChatLib.removeFormatting(lore[6]).split(" ")[3].replace(":", "")] - 1] + Number(ChatLib.removeFormatting(lore[7]).split("/")[0].slice(-1));
             } else {
-                PLAYER_INFORMATION.uniqueVisitors = uniqueVisitorMilestones[ChatLib.removeFormatting(lore[6]).split(" ")[3].replace(":", "")-1] + Number(ChatLib.removeFormatting(lore[7]).split("/")[0].slice(-1));
+                PLAYER_INFORMATION.uniqueVisitors = uniqueVisitorMilestones[ChatLib.removeFormatting(lore[6]).split(" ")[3].replace(":", "") - 1] + Number(ChatLib.removeFormatting(lore[7]).split("/")[0].slice(-1));
             }
             Settings.uniqueVisitors = PLAYER_INFORMATION.uniqueVisitors;
             Settings.save();
@@ -418,29 +479,7 @@ export function updatePlayerInformation() {
             Settings.save();
         }
 
-        PLAYER_INFORMATION.totalFarmingFortune = 100;
-        PLAYER_INFORMATION.totalFarmingFortune += PET_INFORMATION.fortune ? PET_INFORMATION.fortune : 0;
-        PLAYER_INFORMATION.totalFarmingFortune += TOOL_INFORMATION.cultivating ? TOOL_INFORMATION.cultivating : 0;
-        PLAYER_INFORMATION.totalFarmingFortune += TOOL_INFORMATION.harvesting ? TOOL_INFORMATION.harvesting : 0;
-        PLAYER_INFORMATION.totalFarmingFortune += TOOL_INFORMATION.sunder ? TOOL_INFORMATION.sunder : 0;
-        PLAYER_INFORMATION.totalFarmingFortune += TOOL_INFORMATION.itemRate ? TOOL_INFORMATION.itemRate : 0;
-        PLAYER_INFORMATION.totalFarmingFortune += TOOL_INFORMATION.farmingForDummies ? TOOL_INFORMATION.farmingForDummies : 0;
-        PLAYER_INFORMATION.totalFarmingFortune += (PLAYER_INFORMATION.farmingLevel * 4) ? (PLAYER_INFORMATION.farmingLevel * 4) : 0;
-        PLAYER_INFORMATION.totalFarmingFortune += TOOL_INFORMATION.tierBonus ? TOOL_INFORMATION.tierBonus : 0;
-        PLAYER_INFORMATION.totalFarmingFortune += TOOL_INFORMATION.turbo ? TOOL_INFORMATION.turbo : 0;
-        PLAYER_INFORMATION.totalFarmingFortune += TOOL_INFORMATION.rarity ? TOOL_INFORMATION.rarity : 0;
-        PLAYER_INFORMATION.totalFarmingFortune += PLAYER_INFORMATION.anita ? PLAYER_INFORMATION.anita : 0;
-        PLAYER_INFORMATION.totalFarmingFortune += PLAYER_INFORMATION.cake ? PLAYER_INFORMATION.cake : 0;
-        PLAYER_INFORMATION.totalFarmingFortune += TOOL_INFORMATION.armorBonus ? TOOL_INFORMATION.armorBonus : 0;
-        PLAYER_INFORMATION.totalFarmingFortune += TOOL_INFORMATION.equipmentBonus ? TOOL_INFORMATION.equipmentBonus : 0;
-        PLAYER_INFORMATION.totalFarmingFortune += PLAYER_INFORMATION.gardenCommunityUpgrade ? Settings.gardenCommunityUpgrade * 4 : 0;
-        PLAYER_INFORMATION.totalFarmingFortune += PLAYER_INFORMATION.gardenCropBonus ? PLAYER_INFORMATION.gardenCropBonus : 0; /// news
-        PLAYER_INFORMATION.totalFarmingFortune += PET_INFORMATION.itemBonus ? PET_INFORMATION.itemBonus : 0;
-        PLAYER_INFORMATION.totalFarmingFortune += GARDEN_INFORMATION.amountofUnlockedPlots * 3 ? GARDEN_INFORMATION.amountofUnlockedPlots * 3 : 0;
-        PLAYER_INFORMATION.totalFarmingFortune += TOOL_INFORMATION.dedication ? TOOL_INFORMATION.dedication : 0;
-        PLAYER_INFORMATION.totalFarmingFortune += TOOL_INFORMATION.greenThumb ? Number(TOOL_INFORMATION.greenThumb.toFixed(2)) : 0;
-        PLAYER_INFORMATION.totalFarmingFortune += TOOL_INFORMATION.talismanBonus ? TOOL_INFORMATION.talismanBonus : 0;
-
+        PLAYER_INFORMATION.totalFarmingFortune = calculateTotalFarmingFortune();
         TOOL_DISPLAY_INFORMATION.showToolFarmingFortune = PLAYER_INFORMATION.totalFarmingFortune?.toFixed(2);
     }, 5);
 
@@ -538,12 +577,12 @@ export function updatePlayerInformation() {
     register('chat', (message) => {
         const regex = /Friend request from (\[[A-Za-z+]+\])?\s?([A-Za-z0-9_]+)?/;
         const matches = regex.exec(ChatLib.removeFormatting(message));
-
+ 
         if (!matches) return;
-
+ 
         const rank = matches[1] ? matches[1] : "Non";
         const name = matches[2] ? matches[2] : "Unknown";
-
+ 
         console.log(`Rank: ${rank}`);
         console.log(`Name: ${name}`);
     }).setCriteria("${message}");*/
