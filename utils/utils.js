@@ -120,7 +120,11 @@ const createRegisterFunction = (eventType, extraConfig) => (name, callback, conf
     });
 
     if (configValue) {
-        stepTrigger[extraConfig](configValue);
+        if (extraConfig === 'setFps') {
+            stepTrigger.setFps(configValue);
+        } else if (extraConfig === 'setDelay') {
+            stepTrigger.setDelay(configValue);
+        };
     }
 
     return stepTrigger;

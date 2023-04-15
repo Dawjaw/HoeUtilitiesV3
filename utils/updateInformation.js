@@ -59,7 +59,7 @@ export function updateToolInformation() {
         TOOL_DISPLAY_INFORMATION.showToolCounter = TOOL_INFORMATION.counter ? numberWithCommas(TOOL_INFORMATION.counter) : "Equip a Tool";
         TOOL_DISPLAY_INFORMATION.showToolCultivating = TOOL_INFORMATION.farmedCultivating ? numberWithCommas(TOOL_INFORMATION.farmedCultivating) : "Equip a Tool";
         TOOL_DISPLAY_INFORMATION.showToolCollection = COLLECTIONS[TOOL_INFORMATION.toolCropType] ? numberWithCommas(COLLECTIONS[TOOL_INFORMATION.toolCropType].toFixed(0)) : "Break a Crop";
-    }), 2;
+    }, 10);
 
     function updateArmorPieceBonuses(armorTypes) {
         const armorPieceCount = armorTypes.reduce((acc, type) => {
@@ -484,7 +484,7 @@ export function updatePlayerInformation() {
 
     register("actionBar", (message, e) => {
         //ChatLib.chat(message);
-        let result = message.match(/\+([0-9.]+) Farming \(([0-9,]+)\/([0-9,.]+)(k|)/);
+        let result = message.match(/\+([0-9.]+) Farming \(([0-9,]+)\/([0-9,.]+)(k)?/);
         let result2 = message.match(/\+([0-9.]+) Farming \(([0-9.]+)%\)/);
         let result3 = message.match(/\+([0-9.]+) Farming \(([0-9,]+)\/0\)/);
         if (result) {
