@@ -411,7 +411,8 @@ export const BAZAAR_INFORMATION = {
     'wheat': 0,
     'potato': 0,
     'melon': 0,
-    'mushroom': 0
+    'mushroom': 0,
+    'cactus': 0
 };
 
 export const BAZAAR_FARMING_NAMES = [
@@ -422,7 +423,8 @@ export const BAZAAR_FARMING_NAMES = [
     "ENCHANTED_MELON",
     "ENCHANTED_PUMPKIN",
     "ENCHANTED_COCOA",
-    "ENCHANTED_HAY_BLOCK"
+    "ENCHANTED_HAY_BLOCK",
+    "ENCHANTED_CACTUS_GREEN"
 ]
 
 export const BAZAAR_NAME_TO_CROP_NAME = {

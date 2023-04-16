@@ -74,12 +74,18 @@ mainHUD.addChildren(xpHUD);
 //mainHUD.addChildren(jacobHUD);
 mainHUD.addChild(orderhud);
 mainHUD.removeChild(orderhud);
+let last_hidden_state = guiHidden.value;
 
 registerRenderOverlayTrigger('Index render overlay', () => {
     if (guiHidden.value && Settings.neverHideJacobsHUD) {
         jacobHUD.draw();
     }
     if (!World.isLoaded() || reload || guiHidden.value) return;
+    if (last_hidden_state !== guiHidden.value) {
+        fullReload();
+        last_hidden_state = guiHidden.value;
+        return;
+    }
     ////////////////////////////////////////////////////
     // change the color of the screen to indicate that the user is in the GUI
     if (orderGUI.isOpen() || guiWrapper.gui.isOpen()) {

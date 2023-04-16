@@ -31,7 +31,7 @@ export function updateToolInformation() {
         updateGardenBonuses(inGarden, bootsItem, helmetItem, armorTypes, slots);
 
         if (helmet === chestplate && chestplate === leggings && leggings === boots && helmet) {
-            TOOL_INFORMATION.armorBonus += FULL_SET_BONUS[helmet];
+            TOOL_INFORMATION.armorBonus += FULL_SET_BONUS[helmet] || 0;
         }
 
         updateArmorPieceBonuses(armorTypes);
@@ -55,11 +55,20 @@ export function updateToolInformation() {
 
         gardenMilestones = JSON.parse(Settings.gardenCropMilestoneMap);
         updatePlayerGardenInformation(inGarden);
+    }, 2);
 
-        TOOL_DISPLAY_INFORMATION.showToolCounter = TOOL_INFORMATION.counter ? numberWithCommas(TOOL_INFORMATION.counter) : "Equip a Tool";
-        TOOL_DISPLAY_INFORMATION.showToolCultivating = TOOL_INFORMATION.farmedCultivating ? numberWithCommas(TOOL_INFORMATION.farmedCultivating) : "Equip a Tool";
+    registerTickTrigger('Update faster only important', () => {
+        if (!World.isLoaded()) return;
+
+        const heldItem = Player.getHeldItem();
+        if (!heldItem) return;
+        const heldItemNBT = heldItem?.getNBT()?.toObject();
+        const extraAttributes = heldItemNBT?.tag?.ExtraAttributes;
+
+        TOOL_DISPLAY_INFORMATION.showToolCounter = extraAttributes?.mined_crops ? numberWithCommas(extraAttributes?.mined_crops) : "No counter";
+        TOOL_DISPLAY_INFORMATION.showToolCultivating = extraAttributes?.farmed_cultivating ? numberWithCommas(extraAttributes?.farmed_cultivating) : "No Cultivating";
         TOOL_DISPLAY_INFORMATION.showToolCollection = COLLECTIONS[TOOL_INFORMATION.toolCropType] ? numberWithCommas(COLLECTIONS[TOOL_INFORMATION.toolCropType].toFixed(0)) : "Break a Crop";
-    }, 10);
+    });
 
     function updateArmorPieceBonuses(armorTypes) {
         const armorPieceCount = armorTypes.reduce((acc, type) => {
@@ -78,9 +87,15 @@ export function updateToolInformation() {
             const rarity = getItemRarityNBT(itemNBT);
             const extraAttributes = itemNBT?.tag?.ExtraAttributes;
 
-            if (extraAttributes?.modifier) {
-                const bonus = extraAttributes.modifier === 'mossy' ? MOSSY[rarity] : BUSTLNG[rarity];
-                TOOL_INFORMATION.armorBonus += bonus || 0;
+            switch (extraAttributes?.modifier) {
+                case 'mossy':
+                    TOOL_INFORMATION.armorBonus += MOSSY[rarity] || 0;
+                    break;
+                case 'bustling':
+                    TOOL_INFORMATION.armorBonus += BUSTLNG[rarity] || 0;
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -98,8 +113,6 @@ export function updateToolInformation() {
             Object.entries(gardenBonuses).forEach(([key, value]) => {
                 if (getSkyblockID(value) === key) {
                     TOOL_INFORMATION.armorBonus += PLAYER_INFORMATION.farmingLevel ? Number(PLAYER_INFORMATION.farmingLevel) : 0;
-                } else {
-                    TOOL_INFORMATION.armorBonus += ARMOR_BONUS[getSkyblockID(value)]?.fortune || 0;
                 }
             });
         }
