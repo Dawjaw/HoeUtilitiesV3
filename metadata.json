@@ -4,6 +4,6 @@
     "entry": "index.js",
     "requires": ["Vigilance", "axios", "Elementa"],
     "description": "Beta version of HoeUtilitiesV2",
-    "version": "3.4.7",
-    "changelog": "§c[HU3]§r §2Big Update for Garden v1.5. Please report any issues or inconsistencies on https://www.github.com/Dawjaw/HoeUtilitiesV3/issues or dm Dawjaw#0001§r\n§2Fixed Cactus pricing and full set bonus calculations.§r"
+    "version": "3.4.8",
+    "changelog": "§c[HU3]§r §2Big Update for Garden v1.5. Please report any issues or inconsistencies on https://www.github.com/Dawjaw/HoeUtilitiesV3/issues or dm Dawjaw#0001§r\n§2Cactus now yields 1 per block instead of 2 :5head:§r"
 }

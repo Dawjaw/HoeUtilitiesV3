@@ -489,7 +489,7 @@ export const DROPS_PER_BREAK = {
     'cocoa': '3',
     'wart': '2.5',
     'pumpkin': '1',
-    'cactus': '2',
+    'cactus': '1',
     'melon': '5',
     'mushroom': '1',
     'cane': '2' // if you break 2 blocks at once
