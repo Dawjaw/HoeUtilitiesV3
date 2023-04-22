@@ -40,6 +40,10 @@ export function getItemRarityNBT(nbt) {
     return nbt?.tag?.display?.Lore?.join()?.match(/(MYTHIC|COMMON|UNCOMMON|RARE|LEGENDARY|EPIC)/) ? nbt?.tag?.display?.Lore?.join().match(/(MYTHIC|COMMON|UNCOMMON|RARE|LEGENDARY|EPIC)/)[0] : null;
 }
 
+export function getLoreViaNBT(nbt) {
+    return nbt?.tag?.display?.Lore ? nbt?.tag?.display?.Lore : null;
+}
+
 export const triggerStats = {};
 
 export const profileFunction = (func) => {
