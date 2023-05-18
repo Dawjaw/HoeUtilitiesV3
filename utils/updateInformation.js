@@ -467,10 +467,15 @@ export function updatePlayerInformation() {
 
         if (PlayerContainer?.getName() === "Community Shop") {
             if (PlayerContainer?.getStackInSlot(44)?.getName()?.includes("Garden Farming Fortune")) {
+                const lore = getLoreViaNBT(PlayerContainer?.getStackInSlot(44)?.getItemNBT()?.toObject()).join(" ");
+                let deduction = 0
+                if (lore?.includes("Currently upgrading")) {
+                    deduction = 1;
+                }
                 if (isNaN(ChatLib.removeFormatting(PlayerContainer?.getStackInSlot(44)?.getName()).split(" ").pop())) {
-                    Settings.gardenCommunityUpgrade = Number(ROMAN_TO_ARABIC[ChatLib.removeFormatting(PlayerContainer?.getStackInSlot(44)?.getName()).split(" ").pop()]);
+                    Settings.gardenCommunityUpgrade = Number(ROMAN_TO_ARABIC[ChatLib.removeFormatting(PlayerContainer?.getStackInSlot(44)?.getName()).split(" ").pop()])-deduction;
                 } else {
-                    Settings.gardenCommunityUpgrade = Number(ChatLib.removeFormatting(PlayerContainer?.getStackInSlot(44)?.getName()).split(" ").pop());
+                    Settings.gardenCommunityUpgrade = Number(ChatLib.removeFormatting(PlayerContainer?.getStackInSlot(44)?.getName()).split(" ").pop())-deduction;
                 }
                 Settings.save();
             }
