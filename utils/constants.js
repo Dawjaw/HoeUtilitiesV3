@@ -516,16 +516,16 @@ export const COMPACT_VALUES = {
 }
 
 export const CROP_NPC_PRICING = {
-    "potato": 160,
-    "carrot": 160,
-    "wart": 480,
-    "cane": 25600,
-    "melon": 160,
-    "pumpkin": 640,
+    "potato": 480,
+    "carrot": 480,
+    "wart": 640,
+    "cane": 102400,
+    "melon": 320,
+    "pumpkin": 1600,
     "cocoa": 480,
-    "wheat": 1296,
-    "mushroom": 640,
-    "cactus": 160
+    "wheat": 7776,
+    "mushroom": 1600,
+    "cactus": 480
 }
 
 ///////// Tool Display Information /////////
