@@ -245,16 +245,6 @@ export function updateToolInformation() {
         PLAYER_INFORMATION.uniqueVisitors = Settings.uniqueVisitors;
     }
 
-    function updatePlayerGardenInformation(inGarden) {
-        if (inGarden) {
-            PLAYER_INFORMATION.gardenCropBonus = JSON.parse(Settings.gardenCropUpgradeMap)[TOOL_INFORMATION.toolCropType] || 0;
-            PLAYER_INFORMATION.gardenCommunityUpgrade = Settings.gardenCommunityUpgrade * 4 || 0;
-        } else {
-            PLAYER_INFORMATION.gardenCropBonus = 0;
-            PLAYER_INFORMATION.gardenCommunityUpgrade = 0;
-        }
-    }
-
     registerStepTriggerDelay('Is in Garden', () => {
         if (!World.isLoaded()) return;
         inGarden = TabList.getNames().some(name => ChatLib.removeFormatting(name).replace(/[^\w]/g, "").includes("AreaGarden"));
@@ -456,6 +446,8 @@ export function updatePlayerInformation() {
         if (PlayerContainer?.getName() === "Visitor Milestones") {
             const uniqueVisitorMilestones = [0, 1, 5, 10, 20, 30, 40, 50, 60, 70, 80]
             const lore = getLoreViaNBT(PlayerContainer?.getStackInSlot(21)?.getItemNBT()?.toObject());
+            //ChatLib.chat(JSON.stringify(lore));
+            //ChatLib.chat(uniqueVisitorMilestones[ROMAN_TO_ARABIC[ChatLib.removeFormatting(lore[5]).split(" ")[3].replace(":", "")] - 1] + Number(ChatLib.removeFormatting(lore[6]).split("/")[0].slice(-1)));
             if (isNaN(ChatLib.removeFormatting(lore[5]).split(" ")[3].replace(":", ""))) {
                 PLAYER_INFORMATION.uniqueVisitors = uniqueVisitorMilestones[ROMAN_TO_ARABIC[ChatLib.removeFormatting(lore[5]).split(" ")[3].replace(":", "")] - 1] + Number(ChatLib.removeFormatting(lore[6]).split("/")[0].slice(-1));
             } else {

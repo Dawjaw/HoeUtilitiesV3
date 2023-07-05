@@ -6,7 +6,7 @@ import { registerStepTriggerDelay } from "../utils/utils";
 
 registerStepTriggerDelay("API Update", getApiData, 300);
 //register("step", getApiData).setDelay(300);
-register("gameLoad", getApiData);
+//register("gameLoad", getApiData);
 
 function getApiData() {
     print("[HU3] Updating data...");
@@ -15,11 +15,11 @@ function getApiData() {
     JacobFeature.getEvents();
 
     // Hypixel API so key is needed for both
-    if (Settings.apiKey === "") {
+    /*if (Settings.apiKey === "") {
         ChatLib.chat("§ePlease set your api key by generating a new key with §b/api new §eor using §b/hu3 key yourkey §e!§r");
         print("[HU3] Api key not set, failed to get profile and bazaar stats");
         return;
-    }
+    }*/
     getPlayerStats();
     getBazaarData();
 }

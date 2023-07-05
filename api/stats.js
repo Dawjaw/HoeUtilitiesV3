@@ -14,12 +14,11 @@ export function getPlayerStats() {
     // For when api keys are phased out?
     // soon™ 'https://dawjaw.net/getPlayerInformation?uuid=' + uuid
     //sendRequest('https://api.hypixel.net/skyblock/profiles?key=' + Settings.apiKey + '&uuid=' + uuid)
-    axios.get("https://api.hypixel.net/skyblock/profiles", {
+    axios.get("https://dawjaw.net/getPlayerInformation", {
         headers: {
             "User-Agent": "Mozilla/5.0 (ChatTriggers)"
         },
         query: {
-            key: Settings.apiKey,
             uuid: shortUUID
         }
     }).then(response => {
@@ -36,8 +35,8 @@ export function getPlayerStats() {
                 newProfileData = response
             }
         });
-        //print(newProfileData.last_save > oldUpdateData.last_save)
-        if (newProfileData && newProfileData.last_save > oldUpdateData.last_save) {
+
+        if (newProfileData) {
             if ("temp_stat_buffs" in profile_in_use) {
                 if (profile_in_use.temp_stat_buffs.some(buff => {
                     return buff.key === "cake_farming_fortune"
@@ -174,7 +173,7 @@ export function getPlayerStats() {
 
             PLAYER_INFORMATION.anita = (profile_in_use.jacob2.perks.double_drops) ? profile_in_use.jacob2.perks.double_drops * 2 : 0;
             PLAYER_INFORMATION.farmingCap = (profile_in_use.jacob2.perks.farming_level_cap) ? profile_in_use.jacob2.perks.farming_level_cap : 0;
-            oldUpdateData.last_save = newProfileData.last_save
+            //oldUpdateData.last_save = newProfileData.last_save
         }
     }).catch(error => {
         if (error.isAxiosError) {

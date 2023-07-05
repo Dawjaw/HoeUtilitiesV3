@@ -24,7 +24,7 @@ if (Settings.firstRun) {
     ChatLib.chat("§aType §6/hu3 help §ato see a list of commands.§r");
     ChatLib.chat("§aType §6/hu3 gui §ato move the gui around.§r");
     ChatLib.chat("§aType §6/hu3debug §ato print out a breakdown of your farming fortune.§r");
-    ChatLib.chat("§aCertain features might not work if you haven't set your api key yet!§r");
+    //ChatLib.chat("§aCertain features might not work if you haven't set your api key yet!§r");
     const clickableMessage = new Message(
         "§aIf you have any issues, please report them on the ",
         new TextComponent("github page.§r").setClick("open_url", "https://github.com/Dawjaw/HoeUtilitiesV3"),
@@ -46,6 +46,7 @@ if (Settings.firstRun) {
 }*/
 
 // api key check
+/*
 const apiKeyCheck = register('step', () => {
     if (Settings.apiKey === "") {
         ChatLib.chat("§eYou need to set your api key in the settings menu!§r");
@@ -56,6 +57,7 @@ const apiKeyCheck = register('step', () => {
         }
     }
 }).setDelay(30);
+*/
 
 // register debug check
 let currentDebugSetting = Settings.debugMode;
