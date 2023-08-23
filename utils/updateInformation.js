@@ -270,31 +270,35 @@ export function updatePetInformation() {
         PET_INFORMATION.level = 0;
         PET_INFORMATION.petName = key.replace("!", "").replace("✦", "").trim();
         PET_INFORMATION.minosRelic = false;
-    }).setCriteria("You summoned your ${key}");
+    }).setCriteria("You summoned your ${key}!");
     register('chat', (key) => {
-        if (key.replace("!", "").replace("✦", "").trim() === "Elephant" || key.replace("!", "").replace("✦", "").trim() === "Mooshroom Cow") {
+        let pet_name = key.replace("!", "").replace("✦", "").trim();
+        if (pet_name === "Elephant" || pet_name === "Mooshroom Cow" || pet_name === "Bee") {
             PET_INFORMATION.level = 0;
             PET_INFORMATION.petName = "";
             PET_INFORMATION.minosRelic = false;
             PET_INFORMATION.fortune = 0;
         }
-    }).setCriteria("You despawned your ${key}");
+    }).setCriteria("You despawned your ${key}!");
 
     registerStepTriggerFps('Pet Information Update with API data', () => {
         if (PET_INFORMATION.name === "Elephant") {
-            PET_INFORMATION.fortune = PET_INFORMATION.level * 1.8;
+            PET_INFORMATION.fortune = PET_INFORMATION.level * 1.5;
         } else if (PET_INFORMATION.name === "Mooshroom Cow") {
             let petAttribute = 0;
             let minosBonus = 0;
             let strengthBonus = 0;
             let strRequiredPerFortune = 0;
-            petAttribute = 10 + (PET_INFORMATION.level);
-            strRequiredPerFortune = (40 - (PET_INFORMATION.level * 0.2));
+            petAttribute = 10 + (PET_INFORMATION.level * 1);
+            strRequiredPerFortune = ((PET_INFORMATION.level * 0.2)) * 1.3;
             if (PET_INFORMATION.minosRelic) {
-                minosBonus = (petAttribute * 0.33);
+                minosBonus = Number((petAttribute * 0.333333).toFixed(2));
             }
-            strengthBonus += Math.floor(PLAYER_INFORMATION.strength / strRequiredPerFortune);
-            PET_INFORMATION.fortune = petAttribute + minosBonus + strengthBonus;
+            strengthBonus += Math.floor(PLAYER_INFORMATION.strength / 28.57);
+            //print(`petAttribute: ${petAttribute} minosBonus: ${minosBonus} strengthBonus: ${strengthBonus} strRequiredPerFortune: ${strRequiredPerFortune}`);
+            PET_INFORMATION.fortune = Number((petAttribute + minosBonus + strengthBonus).toFixed(2));
+        } else if (PET_INFORMATION.name === "Bee") {
+            PET_INFORMATION.fortune = PET_INFORMATION.level * 0.3;
         } else {
             PET_INFORMATION.fortune = 0;
         }

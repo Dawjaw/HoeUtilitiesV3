@@ -75,6 +75,18 @@ export function getPlayerStats() {
                         });
                         PET_INFORMATION.level = level;
                     }
+                    if (pet.type === "BEE") {
+                        PET_INFORMATION.name = "Bee";
+                        PET_LEVELS.forEach(xpRequired => {
+                            if (pet.exp > xpRequired) {
+                                level += 1;
+                            }
+                            if (level >= 100) {
+                                level = 100;
+                            }
+                        });
+                        PET_INFORMATION.level = level;
+                    }
                     switch (pet.heldItem) {
                         case "MINOS_RELIC":
                             PET_INFORMATION.minosRelic = true;
@@ -171,7 +183,7 @@ export function getPlayerStats() {
                 }
             }
 
-            PLAYER_INFORMATION.anita = (profile_in_use.jacob2.perks.double_drops) ? profile_in_use.jacob2.perks.double_drops * 2 : 0;
+            PLAYER_INFORMATION.anita = (profile_in_use.jacob2.perks.double_drops) ? profile_in_use.jacob2.perks.double_drops * 4 : 0;
             PLAYER_INFORMATION.farmingCap = (profile_in_use.jacob2.perks.farming_level_cap) ? profile_in_use.jacob2.perks.farming_level_cap : 0;
             //oldUpdateData.last_save = newProfileData.last_save
         }
