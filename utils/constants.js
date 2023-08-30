@@ -28,7 +28,7 @@ export const TOOL_INFORMATION = {
     cultivating: 0,
     harvesting: 0,
     sunder: 0,
-    itemRate: 0,
+    baseItemFortune: 0,
     turbo: 0,
     rarity: 0,
     counter: 0,
@@ -79,12 +79,11 @@ export const ROBUST = { // hoe
 }
 
 export const ROOTED = { // equipment
-    COMMON: 4,
-    UNCOMMON: 6,
-    RARE: 8,
-    EPIC: 10,
-    LEGENDARY: 12,
-    MYTHIC: 15
+    COMMON: 6,
+    UNCOMMON: 9,
+    RARE: 12,
+    EPIC: 15,
+    LEGENDARY: 18
 }
 
 export const BLOOMING = { // equipment

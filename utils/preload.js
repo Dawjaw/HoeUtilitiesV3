@@ -124,7 +124,7 @@ register('command', () => {
     ChatLib.chat(`tier bonus: ${TOOL_INFORMATION.tierBonus}`);
     ChatLib.chat(`turbo: ${TOOL_INFORMATION.turbo}`);
     ChatLib.chat(`rarity: ${TOOL_INFORMATION.rarity}`);
-    ChatLib.chat(`item rate: ${TOOL_INFORMATION.itemRate}`);
+    ChatLib.chat(`item rate: ${TOOL_INFORMATION.baseItemFortune}`);
     ChatLib.chat(`harvesting: ${TOOL_INFORMATION.harvesting}`);
     ChatLib.chat(`sunder: ${TOOL_INFORMATION.sunder}`);
     ChatLib.chat(`cultivating: ${TOOL_INFORMATION.cultivating}`);
@@ -141,7 +141,40 @@ register('command', () => {
     ChatLib.chat(`dedication : ${TOOL_INFORMATION.dedication}`);
     ChatLib.chat(`talisman : ${TOOL_INFORMATION.talismanBonus}`);
     ChatLib.chat(`Plot bonus : ${(Settings?.unlockedPlots || 0) * 3}`);
+    ChatLib.chat(`exportable carrot: ${Settings?.exportableCarrot ? 12 : 0}`)
 }).setName("hu3debug");
+
+register('command', () => {
+    const data = [
+        { description: 'Pet fortune', value: PET_INFORMATION.fortune },
+        { description: 'Pet item', value: PET_INFORMATION.itemBonus },
+        { description: 'cultivating', value: TOOL_INFORMATION.cultivating },
+        { description: 'harvesting', value: TOOL_INFORMATION.harvesting },
+        { description: 'sunder', value: TOOL_INFORMATION.sunder },
+        { description: 'baseItemFortune', value: TOOL_INFORMATION.baseItemFortune },
+        { description: 'farmingForDummies', value: TOOL_INFORMATION.farmingForDummies },
+        { description: 'farmingLevel', value: PLAYER_INFORMATION.farmingLevel * 4 },
+        { description: 'tierBonus', value: TOOL_INFORMATION.tierBonus },
+        { description: 'turbo', value: TOOL_INFORMATION.turbo },
+        { description: 'rarity', value: TOOL_INFORMATION.rarity },
+        { description: 'anita', value: PLAYER_INFORMATION.anita },
+        { description: 'cake', value: PLAYER_INFORMATION.cake },
+        { description: 'armorBonus', value: TOOL_INFORMATION.armorBonus },
+        { description: 'equipmentBonus', value: TOOL_INFORMATION.equipmentBonus },
+        { description: 'gardenCommunityUpgrade', value: Settings.gardenCommunityUpgrade * 4 },
+        { description: 'gardenCropBonus', value: PLAYER_INFORMATION.gardenCropBonus },
+        { description: 'itemBonus:', value: PET_INFORMATION.itemBonus },
+        { description: 'unlockedPlots:', value: (Settings?.unlockedPlots || 0) * 3 },
+        { description: 'dedication:', value: TOOL_INFORMATION.dedication },
+        { description: 'greenThumb:', value: Number(TOOL_INFORMATION.greenThumb.toFixed(2)) },
+        { description: 'talismanBonus:', value: TOOL_INFORMATION.talismanBonus },
+        { description: 'exportableCarrot:', value: Settings.exportableCarrot ? 12 : 0 }
+    ];
+
+    data.forEach(element => {
+        print(`${element.description} ${element.value}`)
+    })
+}).setName("betterhu3debug")
 
 new Image("wart.png", "https://dawjaw.net/static/wart.png"); // dirty fix
 

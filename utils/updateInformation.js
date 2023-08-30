@@ -125,7 +125,7 @@ export function updateToolInformation() {
             isToolHeld: false,
             cultivating: 0,
             harvesting: 0,
-            itemRate: 0,
+            baseItemFortune: 0,
             turbo: 0,
             rarity: 0,
             counter: 0,
@@ -142,7 +142,7 @@ export function updateToolInformation() {
             Object.assign(TOOL_INFORMATION, {
                 toolType: "axe",
                 isToolHeld: true,
-                itemRate: getDaedalusAxeBonus(heldItem.getNBT().toObject()),
+                baseItemFortune: getDaedalusAxeBonus(heldItem.getNBT().toObject()),
             });
         }
     }
@@ -158,8 +158,8 @@ export function updateToolInformation() {
                     const formattingRemoved = ChatLib.removeFormatting(lore);
                     const farmFortuneMatch = formattingRemoved?.match(/You have \+[0-9]+☘ Farming Fortune/);
                     if (farmFortuneMatch) {
-                        const itemRateMatch = farmFortuneMatch[0].split(" ")[2].replace("+", "").replace("☘", "");
-                        TOOL_INFORMATION.itemRate += Number(itemRateMatch);
+                        const baseItemFortuneMatch = farmFortuneMatch[0].split(" ")[2].replace("+", "").replace("☘", "");
+                        TOOL_INFORMATION.baseItemFortune += Number(baseItemFortuneMatch);
                     }
                 });
             }
@@ -169,7 +169,7 @@ export function updateToolInformation() {
     function handleBasicTools(extraAttributes) {
         if (Object.keys(BASIC_ITEM_RATES).includes(extraAttributes?.id)) {
             TOOL_INFORMATION.isToolHeld = true;
-            TOOL_INFORMATION.itemRate = BASIC_ITEM_RATES[extraAttributes?.id];
+            TOOL_INFORMATION.baseItemFortune = BASIC_ITEM_RATES[extraAttributes?.id];
             if (extraAttributes?.id.includes("AXE")) {
                 TOOL_INFORMATION.toolType = "axe";
             }
@@ -179,13 +179,13 @@ export function updateToolInformation() {
     function handleSpecialTools(extraAttributes) {
         if (extraAttributes?.id === "COCO_CHOPPER") {
             TOOL_INFORMATION.isToolHeld = true;
-            TOOL_INFORMATION.itemRate = 20;
+            TOOL_INFORMATION.baseItemFortune = 20;
             TOOL_INFORMATION.toolType = "axe";
         }
 
         if (extraAttributes?.id === "FUNGI_CUTTER") {
             TOOL_INFORMATION.isToolHeld = true;
-            TOOL_INFORMATION.itemRate = 30;
+            TOOL_INFORMATION.baseItemFortune = 30;
         }
 
         if (extraAttributes?.id === "CACTUS_KNIFE") {
@@ -203,7 +203,7 @@ export function updateToolInformation() {
         TOOL_INFORMATION.turbo = enchantments?.[`${TOOL_TO_TURBO_ENCHANT[TOOL_INFORMATION.toolCropType]}`] * 5 || 0;
         TOOL_INFORMATION.dedication = enchantments?.dedication ? DEDICATION[enchantments?.dedication] * gardenMilestones?.[TOOL_INFORMATION.toolCropType] : 0;
         TOOL_INFORMATION.farmingForDummies = extraAttributes?.farming_for_dummies_count || 0;
-        TOOL_INFORMATION.cultivating = enchantments?.cultivating || 0;
+        TOOL_INFORMATION.cultivating = enchantments?.cultivating * 2 || 0;
         TOOL_INFORMATION.harvesting = enchantments?.harvesting * 12.5 || 0;
         TOOL_INFORMATION.sunder = enchantments?.sunder * 12.5;
         TOOL_INFORMATION.farmedCultivating = extraAttributes?.farmed_cultivating || "No Cultivating";
@@ -285,18 +285,19 @@ export function updatePetInformation() {
         if (PET_INFORMATION.name === "Elephant") {
             PET_INFORMATION.fortune = PET_INFORMATION.level * 1.5;
         } else if (PET_INFORMATION.name === "Mooshroom Cow") {
-            let petAttribute = 0;
-            let minosBonus = 0;
-            let strengthBonus = 0;
-            let strRequiredPerFortune = 0;
-            petAttribute = 10 + (PET_INFORMATION.level * 1);
-            strRequiredPerFortune = ((PET_INFORMATION.level * 0.2)) * 1.3;
-            if (PET_INFORMATION.minosRelic) {
+            //let strRequiredPerFortune = 0;
+            //petAttribute = 10 + PET_INFORMATION.level;
+            //strRequiredPerFortune = ((PET_INFORMATION.level * 0.2)) * 1.3;
+            /*if (PET_INFORMATION.minosRelic) {
                 minosBonus = Number((petAttribute * 0.333333).toFixed(2));
-            }
-            strengthBonus += Math.floor(PLAYER_INFORMATION.strength / 28.57);
+            }*/
+            //strengthBonus += Math.floor(PLAYER_INFORMATION.strength / 28.57);
             //print(`petAttribute: ${petAttribute} minosBonus: ${minosBonus} strengthBonus: ${strengthBonus} strRequiredPerFortune: ${strRequiredPerFortune}`);
-            PET_INFORMATION.fortune = Number((petAttribute + minosBonus + strengthBonus).toFixed(2));
+            //PET_INFORMATION.fortune = Number((petAttribute + minosBonus + strengthBonus).toFixed(2));
+            PET_INFORMATION.fortune = (10 + PET_INFORMATION.level) + Math.floor(Math.floor(PLAYER_INFORMATION.strength / (40 - PET_INFORMATION.level * .2)) * .7)
+            if (PET_INFORMATION.minosRelic) {
+                PET_INFORMATION.fortune += Number((PET_INFORMATION.fortune * 0.333333).toFixed(2));
+            }
         } else if (PET_INFORMATION.name === "Bee") {
             PET_INFORMATION.fortune = PET_INFORMATION.level * 0.3;
         } else {
@@ -318,12 +319,13 @@ export function updatePlayerInformation() {
     
         const bonuses = [
             PET_INFORMATION.fortune,
+            PET_INFORMATION.itemBonus,
             TOOL_INFORMATION.cultivating,
             TOOL_INFORMATION.harvesting,
             TOOL_INFORMATION.sunder,
-            TOOL_INFORMATION.itemRate,
+            TOOL_INFORMATION.baseItemFortune,
             TOOL_INFORMATION.farmingForDummies,
-            PLAYER_INFORMATION.farmingLevel * 4,
+            (PLAYER_INFORMATION.farmingLevel * 4),
             TOOL_INFORMATION.tierBonus,
             TOOL_INFORMATION.turbo,
             TOOL_INFORMATION.rarity,
@@ -331,13 +333,13 @@ export function updatePlayerInformation() {
             PLAYER_INFORMATION.cake,
             TOOL_INFORMATION.armorBonus,
             TOOL_INFORMATION.equipmentBonus,
-            Settings.gardenCommunityUpgrade * 4,
+            (Settings.gardenCommunityUpgrade * 4),
             PLAYER_INFORMATION.gardenCropBonus,
-            PET_INFORMATION.itemBonus,
-            (Settings?.unlockedPlots || 0) * 3,
+            ((Settings?.unlockedPlots || 0) * 3),
             TOOL_INFORMATION.dedication,
             Number(TOOL_INFORMATION.greenThumb.toFixed(2)),
             TOOL_INFORMATION.talismanBonus,
+            Settings.exportableCarrot ? 12 : 0
         ];
     
         bonuses.forEach((bonus) => {
