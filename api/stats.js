@@ -134,28 +134,35 @@ export function getPlayerStats() {
                 const nbt = net.minecraft.nbt.CompressedStreamTools.func_74796_a(inputstream); //CompressedStreamTools.readCompressed()                            
                 const items = nbt.func_150295_c("i", 10); //NBTTagCompound.getTagList()
                 const nbttaglistL = new NBTTagList(items);
+                let baseItemFortune = 0
+                let equipBonus = 0
+                let reforge = 0
                 for (let i = nbttaglistL.tagCount - 1; i >= 0; i--) {
                     const newCompound = new NBTTagCompound(nbttaglistL.getCompoundTagAt(i)).toObject();
                     if (EQUIPMENT_TAGS.includes(newCompound?.tag?.ExtraAttributes?.id)) {
                         const loreText = newCompound.tag.display.Lore.find(x => x.match(pattern));
-                        ChatLib.removeFormatting(loreText).match(pattern2) ? TOOL_INFORMATION.equipmentBonus += parseInt(ChatLib.removeFormatting(loreText).match(pattern2)[0], 10) : 0;
-                        TOOL_INFORMATION.equipmentBonus += 5;
+                        ChatLib.removeFormatting(loreText).match(pattern2) ? equipBonus += parseInt(ChatLib.removeFormatting(loreText).match(pattern2)[0], 10) : 0;
+                        baseItemFortune += 5;
                         if ("enchantments" in newCompound?.tag?.ExtraAttributes) {
                             TOOL_INFORMATION.greenThumb += GREEN_THUMB_ENCHANT[newCompound?.tag?.ExtraAttributes?.enchantments?.green_thumb] * (Settings?.uniqueVisitors || 0) || 0;
                         }
                         const rarity = getItemRarityNBT(newCompound);
                         switch (newCompound?.tag?.ExtraAttributes?.modifier) {
                             case "rooted":
-                                TOOL_INFORMATION.equipmentBonus += ROOTED[rarity];
+                                reforge += ROOTED[rarity];
                                 break;
                             case "blooming":
-                                TOOL_INFORMATION.equipmentBonus += BLOOMING[rarity];
+                                reforge += BLOOMING[rarity];
                                 break;
                             default:
                                 break;
                         }
                     }
                 }
+                TOOL_INFORMATION.equipmentBonus = (baseItemFortune + equipBonus + reforge)
+                //print(`equip bonus: ${equipBonus}`)
+                //print(`base fortune: ${baseItemFortune}`)
+                //print(`reforge bonus: ${reforge}`)
             }
 
             if("talisman_bag" in profile_in_use) {

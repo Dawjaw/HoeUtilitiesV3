@@ -77,7 +77,7 @@ export function createOrderHUD(info_components) {
         .setChildOf(mainUIContainer);
 
     upButton.onMouseClick((comp, event) => {
-        print("clicked up")
+        //print("clicked up")
         if (elementSelected) {
             moveUp(selectedElement);
         }
@@ -92,7 +92,7 @@ export function createOrderHUD(info_components) {
         .setChildOf(mainUIContainer);
 
     downButton.onMouseClick((comp, event) => {
-        print("clicked down")
+        //print("clicked down")
         if (elementSelected) {
             moveDown(selectedElement);
         }
