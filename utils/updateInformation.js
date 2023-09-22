@@ -294,7 +294,7 @@ export function updatePetInformation() {
             //strengthBonus += Math.floor(PLAYER_INFORMATION.strength / 28.57);
             //print(`petAttribute: ${petAttribute} minosBonus: ${minosBonus} strengthBonus: ${strengthBonus} strRequiredPerFortune: ${strRequiredPerFortune}`);
             //PET_INFORMATION.fortune = Number((petAttribute + minosBonus + strengthBonus).toFixed(2));
-            PET_INFORMATION.fortune = (10 + PET_INFORMATION.level) + Math.floor(Math.floor(PLAYER_INFORMATION.strength / (40 - PET_INFORMATION.level * .2)) * .7)
+            PET_INFORMATION.fortune = (10 + PET_INFORMATION.level) + Math.floor((PLAYER_INFORMATION.strength / (40 - PET_INFORMATION.level * .2)) * .7)
             if (PET_INFORMATION.minosRelic) {
                 PET_INFORMATION.fortune += Number((PET_INFORMATION.fortune * 0.333333).toFixed(2));
             }
